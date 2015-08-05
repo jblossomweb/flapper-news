@@ -9,6 +9,9 @@ var bodyParser = require('body-parser')
 var routes = require('./routes/index')
 var users = require('./routes/users')
 
+require('./models/Posts')
+require('./models/Comments')
+
 var app = express()
 
 // connect to database
