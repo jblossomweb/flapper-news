@@ -8,7 +8,7 @@ var _ = require('underscore')
 var Post = mongoose.model('Post')
 var Comment = mongoose.model('Comment')
 
-// attach model to request param
+// attach model to request param :post
 router.param('post', function(req, res, next, id) {
   Post.findById(id).exec(function (err, post){
     if (err) { return next(err) }
@@ -18,7 +18,7 @@ router.param('post', function(req, res, next, id) {
   })
 })
 
-// attach model to request param
+// attach model to request param :comment
 router.param('comment', function(req, res, next, id) {
   Comment.findById(id).exec(function (err, comment){
     if (err) { return next(err) }
@@ -48,9 +48,7 @@ router.post('/posts', function(req, res, next) {
 // GET /posts/:id - return an individual post with associated comments
 router.get('/posts/:post', function(req, res) {
 	req.post.populate('comments', function(err, post) {
-		if(post.comments.length){
-			post.comments = normalizeComments(post.comments)
-		}
+    if(err) { return next(err) }
 		res.json(normalizePost(post))
 	})
 })
