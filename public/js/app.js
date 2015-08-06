@@ -65,6 +65,16 @@ app.factory('postFactory', ['$http', function($http){
     	console.log(error)
     })
 	}
+	obj.addComment = function addComment(id, comment) {
+	  return $http.post('/api/posts/'+id+'/comments', comment)
+	}
+	obj.upvoteComment = function(post, comment) {
+	  return $http.put('/api/posts/'+post.id+'/comments/'+comment.id+'/upvote').success(function(data){
+	  	comment.upvotes++
+	  }).error(function(error){
+    	console.log(error)
+    })
+	}
   return obj
 }])
 
@@ -101,15 +111,16 @@ function($scope, postFactory, post){
 	$scope.addComment = function(){
 	  if(!$scope.body || $scope.body === '') { return }
 	  if(!$scope.post.comments) $scope.post.comments = []
-	  $scope.post.comments.push({
+		postFactory.addComment(post.id, {
 	    body: $scope.body,
 	    author: 'user',
-	    upvotes: 0
+	  }).success(function(comment) {
+	    $scope.post.comments.push(comment)
 	  })
 	  $scope.body = ''
 	}
 	$scope.upvoteComment = function(comment) {
-	  comment.upvotes++
+	  postFactory.upvoteComment(post,comment)
 	}
 	$scope.upvotePost = function(post) {
 	  postFactory.upvote(post)
