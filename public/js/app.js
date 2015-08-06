@@ -10,7 +10,12 @@ function($stateProvider, $urlRouterProvider) {
     .state('home', {
       url: '/home',
       templateUrl: '/home.html',
-      controller: 'MainCtrl'
+      controller: 'MainCtrl',
+      resolve: {
+		    postPromise: ['postFactory', function(postFactory){
+		      return postFactory.getAll()
+		    }]
+		  }
     })
     .state('posts', {
 		  url: '/posts/{id}',
@@ -25,32 +30,42 @@ app.factory('_', function() {
 	return window._
 })
 
-app.factory('posts', [function(){
-  return [
-		{id: 1, title: 'this is post 1', upvotes: 5},
-	  {id: 2, title: 'this is post 2', upvotes: 2},
-	  {id: 3, title: 'this is post 3', upvotes: 15},
-	  {id: 4, title: 'this is post 4', upvotes: 9},
-	  {id: 5, title: 'this is post 5', upvotes: 4}
-	]
+app.factory('postFactory', ['$http', function($http){
+	var obj = {
+		posts: []
+	}
+	obj.getAll = function getAll() {
+    return $http.get('/api/posts').success(function(data){
+      angular.copy(data, obj.posts)
+    }).error(function(error){
+    	console.log(error)
+    })
+  }
+  obj.create = function(post) {
+  return $http.post('/api/posts', post).success(function(data){
+    obj.posts.push(data)
+  })
+}
+  return obj
 }])
 
 app.controller('MainCtrl', [
 '$scope',
 '$stateParams',
 '_',
-'posts',
-function($scope,$stateParams, _, posts){
-  $scope.posts = posts
+'postFactory',
+function($scope,$stateParams, _, postFactory){
+  $scope.posts = postFactory.posts
 	$scope.addPost = function(){
 		if(!$scope.title || _.isEmpty($scope.title)) { return }
-	  $scope.posts.push({
-	  	id: $scope.posts[$scope.posts.length-1].id + 1, // TODO: cleanup
-	  	title: $scope.title, 
+
+		postFactory.create({
+	    title: $scope.title, 
 	  	link: $scope.link,
 	  	upvotes: 0,
 	  	comments: []
 	  })
+
 	  $scope.title = ''
 	  $scope.link = ''
 	}
@@ -63,9 +78,9 @@ app.controller('PostsCtrl', [
 '$scope',
 '$stateParams',
 '_',
-'posts',
-function($scope, $stateParams, _, posts){
-	$scope.post = _.findWhere(posts, {id: parseInt($stateParams.id) })
+'postFactory',
+function($scope, $stateParams, _, postFactory){
+	$scope.post = _.findWhere(postFactory.posts, {id: parseInt($stateParams.id) })
 	$scope.addComment = function(){
 	  if(!$scope.body || _.isEmpty($scope.body)) { return }
 	  if(!$scope.post.comments) $scope.post.comments = []
