@@ -20,7 +20,12 @@ function($stateProvider, $urlRouterProvider) {
     .state('posts', {
 		  url: '/posts/{id}',
 		  templateUrl: '/posts.html',
-		  controller: 'PostsCtrl'
+		  controller: 'PostsCtrl',
+		  resolve: {
+		    post: ['$stateParams', 'postFactory', function($stateParams, postFactory) {
+		      return postFactory.get($stateParams.id)
+		    }]
+		  }
 		})
 
   $urlRouterProvider.otherwise('home')
@@ -41,23 +46,36 @@ app.factory('postFactory', ['$http', function($http){
     	console.log(error)
     })
   }
-  obj.create = function(post) {
-  return $http.post('/api/posts', post).success(function(data){
-    obj.posts.push(data)
-  })
-}
+  obj.get = function get(id) {
+	  return $http.get('/api/posts/'+id).then(function(res){
+	    return res.data
+	  })
+	}
+  obj.create = function create(post) {
+  	return $http.post('/api/posts', post).success(function(data){
+    	obj.posts.push(data)
+  	}).error(function(error){
+    	console.log(error)
+    })
+	}
+	obj.upvote = function upvote(post) {
+	  return $http.put('/api/posts/'+post.id+'/upvote').success(function(data){
+      post.upvotes++
+    }).error(function(error){
+    	console.log(error)
+    })
+	}
   return obj
 }])
 
 app.controller('MainCtrl', [
 '$scope',
 '$stateParams',
-'_',
 'postFactory',
-function($scope,$stateParams, _, postFactory){
+function($scope,$stateParams, postFactory){
   $scope.posts = postFactory.posts
 	$scope.addPost = function(){
-		if(!$scope.title || _.isEmpty($scope.title)) { return }
+		if(!$scope.title || $scope.title === '') { return }
 
 		postFactory.create({
 	    title: $scope.title, 
@@ -70,19 +88,18 @@ function($scope,$stateParams, _, postFactory){
 	  $scope.link = ''
 	}
 	$scope.upvotePost = function(post) {
-	  post.upvotes++
+	  postFactory.upvote(post)
 	}
 }])
 
 app.controller('PostsCtrl', [
 '$scope',
-'$stateParams',
-'_',
 'postFactory',
-function($scope, $stateParams, _, postFactory){
-	$scope.post = _.findWhere(postFactory.posts, {id: parseInt($stateParams.id) })
+'post',
+function($scope, postFactory, post){
+	$scope.post = post
 	$scope.addComment = function(){
-	  if(!$scope.body || _.isEmpty($scope.body)) { return }
+	  if(!$scope.body || $scope.body === '') { return }
 	  if(!$scope.post.comments) $scope.post.comments = []
 	  $scope.post.comments.push({
 	    body: $scope.body,
@@ -95,6 +112,6 @@ function($scope, $stateParams, _, postFactory){
 	  comment.upvotes++
 	}
 	$scope.upvotePost = function(post) {
-	  post.upvotes++
+	  postFactory.upvote(post)
 	}
 }])
