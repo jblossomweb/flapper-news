@@ -6,6 +6,8 @@ var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 
+var config = require('./config')
+
 require('./models/Posts')
 require('./models/Comments')
 
@@ -15,8 +17,7 @@ var api = require('./routes/api')
 var app = express()
 
 // connect to database
-// TODO: get from .env var
-mongoose.connect('mongodb://localhost/flapper-news')
+mongoose.connect(config.mongo.connection)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
