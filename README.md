@@ -1,4 +1,4 @@
 # flapper-news
-Node/Express/Mongo server support for 'flapper'
+Node/Express/Mongo server support for '[flapper](https://github.com/jblossomweb/flapper "Flapper")'
 
-(editing this readme directly on master should force a heroku deploy)
+
