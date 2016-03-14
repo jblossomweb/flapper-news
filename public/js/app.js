@@ -9,7 +9,7 @@ function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('home', {
       url: '/home',
-      templateUrl: 'views/home.html',
+      templateUrl: 'views/home',
       controller: 'MainCtrl',
       resolve: {
 		    postPromise: ['postFactory', function(postFactory){
@@ -19,7 +19,7 @@ function($stateProvider, $urlRouterProvider) {
     })
     .state('posts', {
 		  url: '/posts/{id}',
-		  templateUrl: 'views/posts.html',
+		  templateUrl: 'views/posts',
 		  controller: 'PostsCtrl',
 		  resolve: {
 		    post: ['$stateParams', 'postFactory', function($stateParams, postFactory) {

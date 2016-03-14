@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+
+.btn {
+	margin-right:4px;
+}
+
+.post-row, .comment-row {
+	margin-bottom:8px;
+}
