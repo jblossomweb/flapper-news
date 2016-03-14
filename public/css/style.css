@@ -14,3 +14,8 @@ a {
 .post-row, .comment-row {
 	margin-bottom:8px;
 }
+
+img.logo {
+	width:40px;
+	margin-right:8px;
+}

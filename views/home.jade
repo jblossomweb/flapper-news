@@ -1,5 +1,7 @@
 .page-header
-  h1 Flapper News
+  h1 
+    img.logo(src="img/flappy-bird.png")
+    | Flapper News Site
 div.post-row(ng-repeat="post in posts | orderBy:'-upvotes'")
   span.glyphicon.glyphicon-thumbs-up(ng-click='upvotePost(post)')
   |   {{post.upvotes}}
