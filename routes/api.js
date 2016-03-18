@@ -64,9 +64,11 @@ router.put('/posts/:post/upvote', function(req, res, next) {
 // POST /posts/:id/comments - add a new comment to a post
 router.post('/posts/:post/comments', function(req, res, next) {
   var comment = new Comment(req.body)
-  comment.post = req.post
+  comment.post = req.post._id
   comment.save(function(err, comment){
-    if(err){ return next(err) }
+    if(err){
+      return next(err) 
+    }
   	// redundancy / de-normalization
     req.post.comments.push(comment)
     req.post.save(function(err, post) {

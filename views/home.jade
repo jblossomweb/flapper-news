@@ -1,24 +1,22 @@
 .page-header
   h1 
     img.logo(src="img/flappy-bird.png")
-    | Flapper News Site
+    | Flapper!
 div.post-row(ng-repeat="post in posts | orderBy:'-upvotes'")
   span.glyphicon.glyphicon-thumbs-up(ng-click='upvotePost(post)')
-  |   {{post.upvotes}}
+  |   {{post.upvotes}} flaps
   span.comment
-    a(ng-show='post.link', href='{{post.link}}', target='_blank')
-      | {{post.title}}
-    span(ng-hide='post.link')
+    a(href='#/posts/{{post.id}}')
       | {{post.title}}
   span
     | &nbsp;
     a(href='#/posts/{{post.id}}') {{post.comments.length || 0}} Comments
-form(name='frmPost', ng-submit='addPost()', style='margin-top:30px;')
-  h3 Add a new post
+form.post-form(name='frmPost', ng-submit='addPost()')
+  h3 Add a Post
   .form-group
     input.form-control(type='text', placeholder='Title', ng-model='title', required='')
   .form-group
     input.form-control(type='url', placeholder='Link', ng-model='link')
   span(style='color:red', ng-show='frmPost.title.$error.required') Title is required
   span(style='color:red', ng-show='frmPost.link.$error.url') Invalid url
-  button.btn.btn-primary(type='submit') Post
+  button.btn.btn-primary(type='submit') Add

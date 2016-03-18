@@ -1,7 +1,7 @@
-body {
+/*body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+}*/
 
 a {
   color: #00B7FF;
@@ -12,10 +12,14 @@ a {
 }
 
 .post-row, .comment-row {
-	margin-bottom:8px;
+	margin-bottom:18px;
 }
 
 img.logo {
 	width:40px;
 	margin-right:8px;
+}
+
+.post-form {
+	margin-top:30px;
 }
