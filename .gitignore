@@ -40,3 +40,6 @@ node_modules
 
 # api docs
 site/apidocs
+
+# generated screenshots
+public/img/screenshots

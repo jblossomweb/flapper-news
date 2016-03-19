@@ -3,7 +3,11 @@
     span {{post.title}}
   span.glyphicon.glyphicon-thumbs-up(ng-click='upvotePost(post)')
   | {{post.upvotes}} flaps
-  p
+  p.screenshot
+    a(ng-show='post.link', href='{{post.link}}', target='_blank') 
+      img(src='img/screenshots/{{post.id}}.png')
+    img(ng-hide='post.link', src='img/screenshots/{{post.id}}.png')
+  p.cta
     a.btn.btn-info(ng-show='post.link', href='{{post.link}}', target='_blank') Follow Link
 h4 Comments
 .comment-row(ng-repeat="comment in post.comments | orderBy:'-upvotes'")

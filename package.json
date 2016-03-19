@@ -18,6 +18,7 @@
     "node-env-file": "^0.1.7",
     "serve-favicon": "~2.3.0",
     "slugify": "^0.1.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "webshot": "^0.18.0"
   }
 }

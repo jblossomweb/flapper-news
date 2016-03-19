@@ -23,3 +23,7 @@ img.logo {
 .post-form {
 	margin-top:30px;
 }
+
+.screenshot img {
+	width:60%;
+}

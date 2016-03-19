@@ -1,10 +1,13 @@
 var mongoose = require('mongoose')
 var slugify = require('slugify')
+var webshot = require('webshot')
+var screenshots = 'public/img/screenshots/'
 
 var PostSchema = new mongoose.Schema({
 	_id: String,
   title: String,
   link: String,
+  desc: String,
   created: Date,
   updated: Date,
   upvotes: {type: Number, default: 0},
@@ -33,6 +36,10 @@ PostSchema.pre('save', function(next) {
 					slugSet(slug, n)
 				} else {
 					self._id = findId
+					webshot(self.link, screenshots + self._id + '.png', function(err){
+						// console.log(self._id + '.png was created')
+					})
+					// don't wait
 					next()
 				}
 			})
