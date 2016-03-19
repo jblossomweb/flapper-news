@@ -90,12 +90,14 @@ function($scope,$stateParams, postFactory){
 		postFactory.create({
 	    title: $scope.title, 
 	  	link: $scope.link,
+	  	desc: $scope.desc,
 	  	upvotes: 0,
 	  	comments: []
 	  })
 
 	  $scope.title = ''
 	  $scope.link = ''
+	  $scope.desc = ''
 	}
 	$scope.upvotePost = function(post) {
 	  postFactory.upvote(post)

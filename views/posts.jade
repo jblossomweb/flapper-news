@@ -7,6 +7,7 @@
     a(ng-show='post.link', href='{{post.link}}', target='_blank') 
       img(src='img/screenshots/{{post.id}}.png')
     img(ng-hide='post.link', src='img/screenshots/{{post.id}}.png')
+  p.description(ng-bind="post.desc")
   p.cta
     a.btn.btn-info(ng-show='post.link', href='{{post.link}}', target='_blank') Follow Link
 h4 Comments

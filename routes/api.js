@@ -90,7 +90,7 @@ module.exports = router
 
 
 normalizePost = function normalizePost(post){
-	post = _.pick(post, '_id', 'title', 'link','comments','upvotes')
+	post = _.pick(post, '_id', 'title', 'link', 'desc', 'comments','upvotes')
 	post = _.extendOwn({id: post._id}, post)
 	delete post._id
 	if(post.comments) post.comments = normalizeComments(post.comments)
