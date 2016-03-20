@@ -18,6 +18,7 @@ a {
 img.logo {
 	width:40px;
 	margin-right:8px;
+    margin-top: -6px;
 }
 
 .post-form {
@@ -26,4 +27,87 @@ img.logo {
 
 .screenshot img {
 	width:60%;
+}
+
+.favicon img {
+	width:16px;
+	height:16px;
+}
+
+h1 .favicon img {
+	width:32px;
+	height:32px;
+}
+
+.page-header {
+	margin-top:20px;
+}
+
+.main-header a {
+	text-decoration:none;
+	color: inherit;
+}
+
+.post-col {
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+.post-col .btn {
+	font-size:11px;
+}
+
+.post-col h4 {
+	font-size:16px;
+	line-height: 16px;
+	width:100%;
+	overflow:hidden;
+	text-overflow: ellipsis;
+}
+
+.post-col .post-desc {
+	height:80px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+}
+
+
+/* Custom, iPhone Retina */ 
+@media only screen and (min-width : 320px) {
+    
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (min-width : 480px) {
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+	.jumbotron h1 {
+		font-size:28px;
+	}
+	.jumbotron p {
+		font-size:18px;
+	}
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+	.jumbotron h1 {
+		font-size:32px;
+	}
+	.jumbotron p {
+		font-size:18px;
+	}
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+	.jumbotron h1 {
+		font-size:68px;
+	}
+	.jumbotron p {
+		font-size:23px;
+	}
 }

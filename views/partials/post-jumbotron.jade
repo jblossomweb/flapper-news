@@ -1,0 +1,15 @@
+.jumbotron.col-md-6.col-sm-6(style="background:transparent")
+  h1 {{post.title}}
+  p {{post.teaser}}
+  p
+    a.btn.btn-success(ng-click='upvotePost(post)')
+      span.glyphicon.glyphicon-thumbs-up
+      |&nbsp;&nbsp;{{post.upvotes}} flaps
+    |&nbsp;
+    a.btn.btn-info(href='#/posts/{{post.id}}')
+      span.glyphicon.glyphicon-bullhorn
+      |&nbsp;&nbsp;{{post.comments.length || 0}} Comments
+      
+.col-md-6.col-sm-6.thumbnail
+  a(href='#/posts/{{post.id}}')
+    img(src='img/screenshots/{{post.id}}.png')

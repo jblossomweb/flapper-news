@@ -1,24 +1,13 @@
-.page-header
-  h1
-    img.logo(src="img/flappy-bird.png")
-    | Flapper!
-div.post-row(ng-repeat="post in posts | orderBy:'-upvotes'")
-  span.glyphicon.glyphicon-thumbs-up(ng-click='upvotePost(post)')
-  |   {{post.upvotes}} flaps
-  span.comment
-    a(href='#/posts/{{post.id}}')
-      | {{post.title}}
-  span
-    | &nbsp;
-    a(href='#/posts/{{post.id}}') {{post.comments.length || 0}} Comments
-form.post-form(name='frmPost', ng-submit='addPost()')
-  h3 Add a Post
-  .form-group
-    input.form-control(type='text', placeholder='Title', ng-model='title', required='')
-  .form-group
-    input.form-control(type='url', placeholder='Link', ng-model='link')
-  .form-group
-    textarea.form-control(placeholder='Description', ng-model='desc')
-  span(style='color:red', ng-show='frmPost.title.$error.required') Title is required
-  span(style='color:red', ng-show='frmPost.link.$error.url') Invalid url
-  button.btn.btn-primary(type='submit') Add
+.row.page-header(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index === 0")
+  include partials/post-jumbotron.jade
+
+.row.page-header
+  .col-md-3.col-sm-6.post-col(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 0 && $index <= 4")
+    include partials/post-col.jade
+.row.page-header
+  .col-md-6
+    //- && $index <= 20
+    .row.post-row(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 4")
+      include partials/post-row.jade
+  .col-md-6
+    include partials/post-form.jade

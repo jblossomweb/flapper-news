@@ -41,5 +41,6 @@ node_modules
 # api docs
 site/apidocs
 
-# generated screenshots
+# generated screenshots / icons
 public/img/screenshots
+public/img/favicons

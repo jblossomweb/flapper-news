@@ -1,5 +1,5 @@
 var underscore = angular.module('underscore', [])
-var app = angular.module('flapperNews', ['ui.router','underscore'])
+var app = angular.module('flapperNews', ['ui.router', 'ui.bootstrap', 'underscore'])
 
 app.config([
 '$stateProvider',
@@ -82,7 +82,7 @@ app.controller('MainCtrl', [
 '$scope',
 '$stateParams',
 'postFactory',
-function($scope,$stateParams, postFactory){
+function($scope, $stateParams, postFactory){
   $scope.posts = postFactory.posts
 	$scope.addPost = function(){
 		if(!$scope.title || $scope.title === '') { return }
@@ -90,6 +90,7 @@ function($scope,$stateParams, postFactory){
 		postFactory.create({
 	    title: $scope.title, 
 	  	link: $scope.link,
+	  	teaser: $scope.teaser,
 	  	desc: $scope.desc,
 	  	upvotes: 0,
 	  	comments: []
@@ -97,6 +98,7 @@ function($scope,$stateParams, postFactory){
 
 	  $scope.title = ''
 	  $scope.link = ''
+	  $scope.teaser = ''
 	  $scope.desc = ''
 	}
 	$scope.upvotePost = function(post) {

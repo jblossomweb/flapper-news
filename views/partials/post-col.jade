@@ -1,0 +1,21 @@
+.thumbnail
+  a.screenshots(href='#/posts/{{post.id}}')
+    img(src='img/screenshots/{{post.id}}.png')
+
+h4
+  a.favicon(href='#/posts/{{post.id}}')
+    img(src='img/favicons/{{post.id}}.ico')
+  |&nbsp;
+  a(href='#/posts/{{post.id}}') {{post.title}}
+
+p.post-desc {{post.teaser}}
+
+p
+  a.btn.btn-success(ng-click='upvotePost(post)')
+    span.glyphicon.glyphicon-thumbs-up
+    |&nbsp;&nbsp;{{post.upvotes}} flaps
+  |&nbsp;
+  a.btn.btn-info(href='#/posts/{{post.id}}')
+    span.glyphicon.glyphicon-bullhorn
+    |&nbsp;&nbsp;{{post.comments.length || 0}} Comments
+

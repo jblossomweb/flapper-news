@@ -1,0 +1,11 @@
+a.btn.btn-success(ng-click='upvotePost(post)')
+  span.glyphicon.glyphicon-thumbs-up
+  |&nbsp;&nbsp;{{post.upvotes}} flaps
+span.comment
+  a.favicon(href='#/posts/{{post.id}}')
+    img(src='img/favicons/{{post.id}}.ico')
+  |&nbsp;&nbsp;
+  a(href='#/posts/{{post.id}}') {{post.title}}
+span
+  | &nbsp;&nbsp;&nbsp;
+  a(href='#/posts/{{post.id}}') {{post.comments.length || 0}} Comments
