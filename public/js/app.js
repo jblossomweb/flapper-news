@@ -43,7 +43,10 @@ app.directive('imgDefault', [ '$http', function($http) {
 	return {
 		link: function(scope, element, attrs) {
 			attrs.$observe('ngSrc', function(ngSrc){
-				$http.get(ngSrc).error(function(err, status){
+				$http.get(ngSrc).success(function(data, status, headers){
+					console.log(status)
+					console.log(headers())
+				}).error(function(err, status){
 					if(status >= 300) {
 						element.attr('src', attrs.defaultSrc)
 					}
