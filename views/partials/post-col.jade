@@ -1,10 +1,10 @@
 .thumbnail
   a.screenshots(href='#/posts/{{post.id}}')
-    img(src='img/screenshots/{{post.id}}.png')
+    img(img-default, ng-src='{{CDN_URL}}img/screenshots/{{post.id}}.jpg', default-src='img/default.jpg')
 
 h4
   a.favicon(href='#/posts/{{post.id}}')
-    img(src='img/favicons/{{post.id}}.ico')
+    img(img-default, ng-src='{{CDN_URL}}img/favicons/{{post.id}}.ico', default-src='favicon.ico')
   |&nbsp;
   a(href='#/posts/{{post.id}}') {{post.title}}
 

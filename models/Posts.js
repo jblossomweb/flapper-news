@@ -4,12 +4,18 @@ var http = require('http')
 var https = require('https')
 var url = require('url')
 var qs = require('querystring')
-var fs = require('fs')
-var _ = require('underscore')
-var webshot = require('webshot')
-var favicon = require('favicon')
+var ws = require('webshot')
+var pt = require('stream').PassThrough
+var fv = require('favicon')
 
+var config = require("../config")
 var Vimeo = require("../services/vimeo")
+
+var File = require("../services/filesys")
+
+if(config.aws.use_aws_s3) {
+    File = require("../services/aws")
+}
 
 var screenshots = 'public/img/screenshots/' //TODO: get from config
 var favicons = 'public/img/favicons/' //TODO: get from config
@@ -26,6 +32,7 @@ var PostSchema = new mongoose.Schema({
   desc: String,
   source: String,
   externalId: String,
+  image: String,
   created: Date,
   updated: Date,
   upvotes: {type: Number, default: 0},
@@ -55,21 +62,12 @@ PostSchema.pre('save', function(next) {
                 } else {
                     self._id = findId
 
-                    screenshot(self, screenshots + self._id + '.png', function(err){
-                        // console.log(self._id + '.png was created')
+                    screenshot(self, screenshots + self._id + '.jpg', function(err){
+                        // console.log(self._id + '.jpg was created')
                     })
 
-                    favicon(self.link, function(err, favicon_url){
-                        var link = url.parse(self.link)
-                        if(!favicon_url) {
-                            var favicon_url = link.protocol + "//" + link.host + "/favicon.ico"
-                        }
-                        var favLink = url.parse(favicon_url)
-                        var ico = fs.createWriteStream(favicons + self._id + '.ico')
-                        methods[favLink.protocol].get(favicon_url, function(response) {
-                            response.pipe(ico)
-                            // console.log(self._id + '.ico was created')
-                        })
+                    favicon(self,  favicons + self._id + '.ico', function(){
+                        // console.log(self._id + '.ico was created')
                     })
                     // don't wait
                     next()
@@ -88,6 +86,21 @@ PostSchema.methods.upvote = function(done) {
 mongoose.model('Post', PostSchema)
 
 // privates
+
+function favicon(post, path, callback) {
+    var link = url.parse(post.link)
+    fv(link, function(err, favicon_url) {
+        if(!favicon_url) {
+            var favicon_url = link.protocol + "//" + link.host + "/favicon.ico"
+        }
+        File.pipe(favicon_url, path, function(err){
+            if(err) {
+                // console.log(err)
+            }
+            callback()
+        })
+    })
+}
 
 function screenshot(post, path, callback) {
     var link = url.parse(post.link)
@@ -109,9 +122,15 @@ function screenshot(post, path, callback) {
     }
 }
 
+function webshot(link, path, callback) {
+    var pass = new pt()
+    var shot = ws(link, {streamType: 'jpg'})
+    shot.pipe(pass)
+    File.save(pass, path, callback)
+}
+
 function youtubeShot(post, path, callback) {
     var link = url.parse(post.link)
-
     if(link.host === 'youtu.be') {
         post.externalId = link.path.replace("/","")
     } else {
@@ -120,14 +139,12 @@ function youtubeShot(post, path, callback) {
             post.externalId = params.v
         }
     }
-
     if(post.externalId) {
-        var imageFile = fs.createWriteStream(path)
         var thumbUrl = url.parse("http://img.youtube.com/vi/" + post.externalId + "/0.jpg")
-        methods[thumbUrl.protocol].get(thumbUrl.href, function(response) {
-            response.pipe(imageFile)
-            callback()
-        })
+
+        // TODO: make sure path matches jpg
+
+        File.pipe(thumbUrl, path, callback)
     } else {
         webshot(post.link, path, callback)
     }
@@ -135,7 +152,6 @@ function youtubeShot(post, path, callback) {
 
 function vimeoShot(post, path, callback) {
     var link = url.parse(post.link)
-    // var url = "http://www.vimeo.com/7058755"; //Or any other Vimeo url format
     var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/
     var match = link.href.match(regExp)
     if (match){
@@ -144,20 +160,16 @@ function vimeoShot(post, path, callback) {
         Vimeo.getById(post.externalId, function(err, video) {
             if(video && !err) {
                 var thumbUrl = video.thumbnail_small.replace("100x75","800x600")
-                var imageFile = fs.createWriteStream(path)
-                var thumb = url.parse(thumbUrl)
-                methods[thumb.protocol].get(thumb.href, function(response) {
-                 response.pipe(imageFile)
-                 callback()
-                })
+
+                // TODO: get thumbUrl file extension, make sure path matches
+
+                File.pipe(thumbUrl, path, callback)
             } else {
                 // console.log("could not talk to vimeo")
                 post.source = "web"
                 webshot(post.link, path, callback)
             }
         })
-
-        
     }else{
         // console.log("not a vimeo url")
         post.source = "web"

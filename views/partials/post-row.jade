@@ -3,7 +3,7 @@ a.btn.btn-success(ng-click='upvotePost(post)')
   |&nbsp;&nbsp;{{post.upvotes}} flaps
 span.comment
   a.favicon(href='#/posts/{{post.id}}')
-    img(src='img/favicons/{{post.id}}.ico')
+    img(img-default, ng-src='{{CDN_URL}}img/favicons/{{post.id}}.ico', default-src='favicon.ico')
   |&nbsp;&nbsp;
   a(href='#/posts/{{post.id}}') {{post.title}}
 span

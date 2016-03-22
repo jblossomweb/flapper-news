@@ -1,0 +1,12 @@
+h4 Comments
+.comment-row(ng-repeat="comment in post.comments | orderBy:'-upvotes'")
+  p.comment {{comment.body}}
+  p
+    span.glyphicon.glyphicon-thumbs-up(ng-click='upvoteComment(comment)')
+    |  {{comment.upvotes}} flaps - by {{comment.author}}
+form(ng-submit='addComment()', style='margin-top:30px;')
+  h3 Add a Comment
+  .form-group
+    input.form-control(type='text', placeholder='Comment', ng-model='body')
+  a.btn.btn-danger(href='#/home') Back to Home
+  button.btn.btn-primary(type='submit') Comment

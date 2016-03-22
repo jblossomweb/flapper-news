@@ -7,9 +7,9 @@
       |&nbsp;&nbsp;{{post.upvotes}} flaps
     |&nbsp;
     a.btn.btn-info(href='#/posts/{{post.id}}')
-      span.glyphicon.glyphicon-bullhorn
+      span.glyphicon.glyphicon-comment
       |&nbsp;&nbsp;{{post.comments.length || 0}} Comments
       
 .col-md-6.col-sm-6.thumbnail
   a(href='#/posts/{{post.id}}')
-    img(src='img/screenshots/{{post.id}}.png')
+    img(img-default, ng-src='{{CDN_URL}}img/screenshots/{{post.id}}.jpg', default-src='img/default.jpg')

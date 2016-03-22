@@ -1,25 +1,9 @@
-.row
-  h3.favicon
-    img(src='img/favicons/{{post.id}}.ico')
-    span {{post.title}}
-  span.glyphicon.glyphicon-thumbs-up(ng-click='upvotePost(post)')
-  | {{post.upvotes}} flaps
-  p.screenshot
-    a(ng-show='post.link', href='{{post.link}}', target='_blank') 
-      img(src='img/screenshots/{{post.id}}.png')
-    img(ng-hide='post.link', src='img/screenshots/{{post.id}}.png')
-  p.description(ng-bind="post.desc")
-  p.cta
-    a.btn.btn-info(ng-show='post.link', href='{{post.link}}', target='_blank') Follow Link
-h4 Comments
-.comment-row(ng-repeat="comment in post.comments | orderBy:'-upvotes'")
-  p.comment {{comment.body}}
-  p
-    span.glyphicon.glyphicon-thumbs-up(ng-click='upvoteComment(comment)')
-    |  {{comment.upvotes}} flaps - by {{comment.author}}
-form(ng-submit='addComment()', style='margin-top:30px;')
-  h3 Add a Comment
-  .form-group
-    input.form-control(type='text', placeholder='Comment', ng-model='body')
-  a.btn.btn-danger(href='#/home') Back to Home
-  button.btn.btn-primary(type='submit') Comment
+
+.row.page-header
+  include partials/post-page-top.jade
+
+.row.page-header
+  .col-md-6
+    p.description(ng-bind="post.desc")
+  .col-md-6
+    include partials/post-comments.jade

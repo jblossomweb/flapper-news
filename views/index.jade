@@ -8,7 +8,8 @@ html
     style.
       .glyphicon-thumbs-up { cursor:pointer }
       .comment { font-size:20px; margin-left:10px }
-  body(ng-app="flapperNews")
+  body(cdn, ng-app="flapperNews", data-url="#{CDN_URL}")
+    //- div #{CDN_URL}
     .container
       include partials/page-header.jade
       ui-view

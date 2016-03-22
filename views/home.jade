@@ -2,8 +2,9 @@
   include partials/post-jumbotron.jade
 
 .row.page-header
-  .col-md-3.col-sm-6.post-col(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 0 && $index <= 4")
+  .col-md-3.col-sm-6.col-xs-6.post-col(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 0 && $index <= 4")
     include partials/post-col.jade
+
 .row.page-header
   .col-md-6
     //- && $index <= 20

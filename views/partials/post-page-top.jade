@@ -1,0 +1,12 @@
+.col-md-6.col-sm-6.thumbnail
+  a(href='{{post.link}}', target='_blank')
+    img(img-default, ng-src='{{CDN_URL}}img/screenshots/{{post.id}}.jpg', default-src='img/default.jpg')
+
+.jumbotron.col-md-6.col-sm-6(style="background:transparent")
+  h1 {{post.title}}
+  p {{post.teaser}}
+  p
+    a.btn.btn-info(ng-show='post.link', href='{{post.link}}', target='_blank')
+      span.glyphicon.glyphicon-hand-right
+      |&nbsp;&nbsp;Website
+      

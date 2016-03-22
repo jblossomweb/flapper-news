@@ -5,7 +5,6 @@ app.config([
 '$stateProvider',
 '$urlRouterProvider',
 function($stateProvider, $urlRouterProvider) {
-
   $stateProvider
     .state('home', {
       url: '/home',
@@ -29,6 +28,29 @@ function($stateProvider, $urlRouterProvider) {
 		})
 
   $urlRouterProvider.otherwise('home')
+}])
+
+app.directive('cdn', function() {
+	return {
+		link: function(scope, element, attrs) {
+			// essentially $rootScope
+		  scope.CDN_URL = attrs.url
+		},
+	}
+})
+
+app.directive('imgDefault', [ '$http', function($http) {
+	return {
+		link: function(scope, element, attrs) {
+			attrs.$observe('ngSrc', function(ngSrc){
+				$http.get(ngSrc).error(function(err, status){
+					if(status >= 300) {
+						element.attr('src', attrs.defaultSrc)
+					}
+				})
+			})
+		},
+	}
 }])
 
 app.factory('_', function() {
