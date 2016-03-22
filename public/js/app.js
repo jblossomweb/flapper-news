@@ -57,6 +57,36 @@ app.directive('imgDefault', [ '$http', function($http) {
 	}
 }])
 
+app.directive('youtubeVideo', function() {
+	return {
+		template: '<iframe class="youtube-video" src="{{videoUrl}}" webkitallowfullscreen mozallowfullscreen allowfullscreen>',
+		link: function(scope, element, attrs) {
+			scope.videoId = angular.copy(attrs.videoId)
+		},
+		scope: {
+			videoId: "@"
+		},
+		controller: ['$scope', '$sce', function($scope, $sce) {
+			$scope.videoUrl = $sce.trustAsResourceUrl('https://www.youtube.com/embed/'+$scope.videoId)
+		}]
+	}
+})
+
+app.directive('vimeoVideo', function() {
+	return {
+		template: '<iframe class="vimeo-video" src="{{videoUrl}}" webkitallowfullscreen mozallowfullscreen allowfullscreen>',
+		link: function(scope, element, attrs) {
+			scope.videoId = angular.copy(attrs.videoId)
+		},
+		scope: {
+			videoId: "@"
+		},
+		controller: ['$scope', '$sce', function($scope, $sce) {
+			$scope.videoUrl = $sce.trustAsResourceUrl('https://player.vimeo.com/video/'+$scope.videoId)
+		}]
+	}
+})
+
 app.factory('_', function() {
 	return window._
 })

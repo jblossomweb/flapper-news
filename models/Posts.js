@@ -146,6 +146,7 @@ function youtubeShot(post, path, callback) {
 
         File.pipe(thumbUrl, path, callback)
     } else {
+        post.source = "web"
         webshot(post.link, path, callback)
     }
 }
