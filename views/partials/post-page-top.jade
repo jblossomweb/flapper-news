@@ -13,6 +13,10 @@
   h1 {{post.title}}
   p {{post.teaser}}
   p
+    a.btn.btn-success(ng-click='upvotePost(post)')
+      span.glyphicon.glyphicon-thumbs-up
+      |&nbsp;&nbsp;{{post.upvotes}} flaps
+    |&nbsp;
     a.btn.btn-info(ng-show='post.link', href='{{post.link}}', target='_blank')
       span.glyphicon.glyphicon-hand-right
       |&nbsp;&nbsp;Website
