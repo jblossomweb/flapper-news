@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "install": "bower install",
-    "start": "node ./bin/www"
+    "start": "npm install;node ./bin/www"
   },
   "dependencies": {
     "aws-sdk": "^2.2.45",
