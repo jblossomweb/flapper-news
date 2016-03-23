@@ -12,7 +12,7 @@ favicons and screenshots will attempt to save locally to the following directori
 public/img/favicons
 public/img/screenshots
 ```
-these directories should be created on clone, with their contents gitignored.
+these directories will be created when cloning the repository, with their contents gitignored.
 
 If you wish to use AWS S3 instead (required for Heroku), setup the following .env vars:
 ```
