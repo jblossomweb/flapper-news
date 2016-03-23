@@ -21,4 +21,8 @@ AWS_ACCESS_KEY_ID=(your access key id)
 AWS_SECRET_ACCESS_KEY=(your secret access key)
 S3_BUCKET=(the bucket you wish to use)
 ```
-once ready, start the application with npm start
+once ready, start the application with
+
+```
+npm start
+```
