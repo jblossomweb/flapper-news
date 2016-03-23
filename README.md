@@ -26,3 +26,5 @@ once ready, start the application with
 ```
 npm start
 ```
+
+and it will install npm and bower dependencies automatically.
