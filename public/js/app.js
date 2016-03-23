@@ -29,12 +29,41 @@ function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('home')
 }])
 
-app.directive('cdn', function() {
+app.directive('rootScope', function() {
+	// setup some $rootScope
 	return {
 		link: function(scope, element, attrs) {
-			// essentially $rootScope
-		  scope.CDN_URL = attrs.url
+			scope.CDN_URL = attrs.cdnUrl
 		},
+		controller: ['$scope', '$uibModal', 'postFactory', function($scope, $uibModal, postFactory) {
+			$scope.openModal = function(template, data, size) {
+				if(!size) {
+					var size = 'lg'
+				}
+				var modalInstance = $uibModal.open({
+					templateUrl: 'views/modals/' + template,
+					size: size,
+					controller: 'ModalCtrl',
+					resolve: {
+						data: data || null
+					}
+				})
+			}
+			$scope.createPost = function(post){
+				if(!post || !post.title || post.title === '') { return }
+				postFactory.create({
+					title: post.title, 
+					link: post.link,
+					teaser: post.teaser,
+					desc: post.desc,
+					upvotes: 0,
+					comments: []
+				})
+			}
+			$scope.upvotePost = function(post) {
+				postFactory.upvote(post)
+			}
+		}]
 	}
 })
 
@@ -56,32 +85,40 @@ app.directive('imgDefault', [ '$http', function($http) {
 	}
 }])
 
-app.directive('youtubeVideo', function() {
+
+app.directive('videoIframe', function() {
 	return {
-		template: '<iframe class="youtube-video" src="{{videoUrl}}" webkitallowfullscreen mozallowfullscreen allowfullscreen>',
+		templateUrl: 'views/directives/video-iframe',
 		link: function(scope, element, attrs) {
-			scope.videoId = angular.copy(attrs.videoId)
+			scope.videoId = attrs.videoId
+			scope.videoType = attrs.videoType
 		},
 		scope: {
-			videoId: "@"
+			videoId: "@",
+			videoType: "@"
 		},
 		controller: ['$scope', '$sce', function($scope, $sce) {
-			$scope.videoUrl = $sce.trustAsResourceUrl('https://www.youtube.com/embed/'+$scope.videoId)
+			switch($scope.videoType) {
+				case 'youtube': $scope.embedBase = 'https://www.youtube.com/embed/'
+				break;
+				case 'vimeo': $scope.embedBase = 'https://player.vimeo.com/video/'
+			}
+			$scope.videoUrl = $sce.trustAsResourceUrl($scope.embedBase + $scope.videoId)
 		}]
 	}
 })
 
-app.directive('vimeoVideo', function() {
+app.directive('postForm', function() {
 	return {
-		template: '<iframe class="vimeo-video" src="{{videoUrl}}" webkitallowfullscreen mozallowfullscreen allowfullscreen>',
-		link: function(scope, element, attrs) {
-			scope.videoId = angular.copy(attrs.videoId)
-		},
-		scope: {
-			videoId: "@"
-		},
-		controller: ['$scope', '$sce', function($scope, $sce) {
-			$scope.videoUrl = $sce.trustAsResourceUrl('https://player.vimeo.com/video/'+$scope.videoId)
+		templateUrl: 'views/directives/post-form',
+		controller: ['$scope', '$rootScope', function($scope, $rootScope) {
+			$scope.addPost = function() {
+				$rootScope.createPost($scope)
+				$scope.title = ''
+				$scope.link = ''
+				$scope.teaser = ''
+				$scope.desc = ''
+			}
 		}]
 	}
 })
@@ -129,34 +166,31 @@ app.factory('postFactory', ['$http', function($http){
   return obj
 }])
 
-app.controller('MainCtrl', [
+
+// generic, stateless modal controller, accepts a data param if needed
+app.controller('ModalCtrl', [
 '$scope',
-'$stateParams',
-'postFactory',
-function($scope, $stateParams, postFactory){
-  $scope.posts = postFactory.posts
-	$scope.addPost = function(){
-		if(!$scope.title || $scope.title === '') { return }
-
-		postFactory.create({
-	    title: $scope.title, 
-	  	link: $scope.link,
-	  	teaser: $scope.teaser,
-	  	desc: $scope.desc,
-	  	upvotes: 0,
-	  	comments: []
-	  })
-
-	  $scope.title = ''
-	  $scope.link = ''
-	  $scope.teaser = ''
-	  $scope.desc = ''
+'$uibModalInstance',
+'data',
+function($scope, $uibModalInstance, data) {
+	$scope.data = data
+	$scope.submit = function(newData) {
+		$uibModalInstance.close(newData)
 	}
-	$scope.upvotePost = function(post) {
-	  postFactory.upvote(post)
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel')
 	}
 }])
 
+// main page controller, see states
+app.controller('MainCtrl', [
+'$scope',
+'postFactory',
+function($scope, postFactory){
+	$scope.posts = postFactory.posts
+}])
+
+// post page controller, see states
 app.controller('PostsCtrl', [
 '$scope',
 'postFactory',
@@ -176,8 +210,5 @@ function($scope, postFactory, post){
 	}
 	$scope.upvoteComment = function(comment) {
 	  postFactory.upvoteComment(post,comment)
-	}
-	$scope.upvotePost = function(post) {
-	  postFactory.upvote(post)
 	}
 }])

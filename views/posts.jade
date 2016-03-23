@@ -1,9 +1,10 @@
+include inc/page-header.jade
 
 .row.page-header
-  include partials/post-page-top.jade
+  include inc/post-page-top.jade
 
 .row.page-header
   .col-md-6
     p.description(ng-bind="post.desc")
   .col-md-6
-    include partials/post-comments.jade
+    include inc/post-comments.jade

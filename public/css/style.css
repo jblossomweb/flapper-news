@@ -74,6 +74,29 @@ h1 .favicon img {
 	text-overflow: ellipsis;
 }
 
+.modal-container .post-form-container {
+	position: relative;
+}
+
+.modal-container .post-form-container .btn-close {
+	position: absolute;
+    top: 10px;
+    right: -20px;
+    border-radius: 50%;
+    width: 40px;
+    height: 46px;
+    cursor: pointer;
+    font-size: 16px;
+    padding-right: 30px;
+    padding-top: 14px;
+}
+
+.modal-container .post-form-container form {
+	position:relative;
+	background:#2b3e50;
+	border:4px solid #4e5d6c;
+	padding-bottom:12px;
+}
 
 /* Custom, iPhone Retina */ 
 @media only screen and (min-width : 320px) {

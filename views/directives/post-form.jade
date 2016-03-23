@@ -10,4 +10,6 @@ form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
     textarea.form-control(placeholder='Description', ng-model='desc', rows="12")
   span(style='color:red', ng-show='frmPost.title.$error.required') Title is required
   span(style='color:red', ng-show='frmPost.link.$error.url') Invalid url
-  button.btn.btn-primary(type='submit') Add
+  button.pull-right.btn.btn-primary(type='submit')
+    span.glyphicon.glyphicon-plus
+    |&nbsp;&nbsp; Add Post

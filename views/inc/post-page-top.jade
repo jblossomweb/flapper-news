@@ -1,10 +1,6 @@
 .col-md-6.col-sm-12.thumbnail
 
-  .embed-responsive.embed-responsive-16by9(ng-if="post.source === 'youtube'")
-    youtube-video.embed-responsive-item(video-id="{{post.externalId}}")
-
-  .embed-responsive.embed-responsive-16by9(ng-if="post.source === 'vimeo'")
-    vimeo-video.embed-responsive-item(video-id="{{post.externalId}}")
+  video-iframe(ng-if="post.source === 'youtube' || post.source === 'vimeo'", video-id="{{post.externalId}}", video-type="{{post.source}}")
 
   a(ng-if="post.source === 'web'", href='{{post.link}}', target='_blank')
     img(img-default, ng-src='{{CDN_URL}}img/screenshots/{{post.id}}.jpg', default-src='img/default.jpg')

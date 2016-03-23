@@ -1,14 +1,16 @@
+include inc/page-header.jade
+
 .row.page-header(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index === 0")
-  include partials/post-jumbotron.jade
+  include inc/post-jumbotron.jade
 
 .row.page-header
   .col-md-3.col-sm-6.col-xs-6.post-col(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 0 && $index <= 4")
-    include partials/post-col.jade
+    include inc/post-col.jade
 
 .row.page-header
   .col-md-6
     //- && $index <= 20
     .row.post-row(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 4")
-      include partials/post-row.jade
+      include inc/post-row.jade
   .col-md-6
-    include partials/post-form.jade
+    post-form
