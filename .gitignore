@@ -41,7 +41,3 @@ bower_components
 
 # api docs
 site/apidocs
-
-# generated screenshots / icons
-public/img/screenshots
-public/img/favicons
