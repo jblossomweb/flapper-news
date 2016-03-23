@@ -1,0 +1,25 @@
+{
+  "name": "flapper-news",
+  "description": "",
+  "main": "",
+  "authors": [
+    "John Blossom <jblossom.web@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jblossomweb/flapper-news",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#~1.5.2",
+    "angular-ui-router": "~0.2.18",
+    "angular-bootstrap": "~1.2.5",
+    "bootswatch-dist": "superhero"
+  }
+}

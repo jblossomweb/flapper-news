@@ -1,5 +1,4 @@
-var underscore = angular.module('underscore', [])
-var app = angular.module('flapperNews', ['ui.router', 'ui.bootstrap', 'underscore'])
+var app = angular.module('flapperNews', ['ui.router', 'ui.bootstrap'])
 
 app.config([
 '$stateProvider',
@@ -85,10 +84,6 @@ app.directive('vimeoVideo', function() {
 			$scope.videoUrl = $sce.trustAsResourceUrl('https://player.vimeo.com/video/'+$scope.videoId)
 		}]
 	}
-})
-
-app.factory('_', function() {
-	return window._
 })
 
 app.factory('postFactory', ['$http', function($http){

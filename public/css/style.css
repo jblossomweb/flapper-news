@@ -21,6 +21,9 @@ img.logo {
     margin-top: -6px;
 }
 
+.glyphicon-thumbs-up { cursor:pointer }
+.comment { font-size:20px; margin-left:10px }
+
 .post-form {
 	margin-top:30px;
 }

@@ -1,22 +1,17 @@
 html
   head
     title Flapper!
-    link(href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css", rel="stylesheet")
-    link(href="//bootswatch.com/superhero/bootstrap.min.css", rel="stylesheet")
+    link(href="libs/bootswatch-dist/css/bootstrap.min.css", rel="stylesheet")
     link(href="css/style.css", rel="stylesheet")
-    
-    style.
-      .glyphicon-thumbs-up { cursor:pointer }
-      .comment { font-size:20px; margin-left:10px }
+      
   body(cdn, ng-app="flapperNews", data-url="#{CDN_URL}")
-    //- div #{CDN_URL}
     .container
       include partials/page-header.jade
       ui-view
 
-    script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js")
-    script(src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.js")
-    script(src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.2.4/ui-bootstrap.min.js")
-    script(src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.2.4/ui-bootstrap-tpls.min.js")
-    script(src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js")
+    script(src="libs/angular/angular.min.js")
+    script(src="libs/angular-ui-router/release/angular-ui-router.min.js")
+    script(src="libs/angular-bootstrap/ui-bootstrap.min.js")
+    script(src="libs/angular-bootstrap/ui-bootstrap-tpls.min.js")
+
     script(src="js/app.js")
