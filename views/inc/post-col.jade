@@ -1,6 +1,6 @@
 .thumbnail
-  a.screenshots(href='#/posts/{{post.id}}')
-    img(img-default, ng-src='{{CDN_URL}}img/screenshots/{{post.id}}.jpg', default-src='img/default.jpg')
+  a.embed-responsive.embed-responsive-16by9.screenshots(href='#/posts/{{post.id}}')
+    img.embed-responsive-item(img-default, ng-src='{{CDN_URL}}img/screenshots/{{post.id}}.jpg', default-src='img/default.jpg')
 
 h4
   a.favicon(href='#/posts/{{post.id}}')

@@ -2,6 +2,8 @@
 
   video-iframe(ng-if="post.source === 'youtube' || post.source === 'vimeo'", video-id="{{post.externalId}}", video-type="{{post.source}}")
 
+  video-iframe(ng-if="post.source === 'web-video'", video-embed="{{post.videoPlayer}}")
+
   a(ng-if="post.source === 'web'", href='{{post.link}}', target='_blank')
     img(img-default, ng-src='{{CDN_URL}}img/screenshots/{{post.id}}.jpg', default-src='img/default.jpg')
 

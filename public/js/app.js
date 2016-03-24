@@ -76,7 +76,7 @@ app.directive('imgDefault', [ '$http', function($http) {
 						element.attr('src', attrs.defaultSrc)
 					}
 				}).error(function(err, status){
-					if(status >= 300) {
+					if(status >= 400) {
 						element.attr('src', attrs.defaultSrc)
 					}
 				})
@@ -92,18 +92,24 @@ app.directive('videoIframe', function() {
 		link: function(scope, element, attrs) {
 			scope.videoId = attrs.videoId
 			scope.videoType = attrs.videoType
+			scope.videoEmbed = attrs.videoEmbed
 		},
 		scope: {
 			videoId: "@",
-			videoType: "@"
+			videoType: "@",
+			videoEmbed: "@"
 		},
 		controller: ['$scope', '$sce', function($scope, $sce) {
 			switch($scope.videoType) {
-				case 'youtube': $scope.embedBase = 'https://www.youtube.com/embed/'
+				case 'youtube': 
+					$scope.videoUrl = $sce.trustAsResourceUrl('https://www.youtube.com/embed/' + $scope.videoId)
 				break;
-				case 'vimeo': $scope.embedBase = 'https://player.vimeo.com/video/'
+				case 'vimeo': 
+					$scope.videoUrl = $sce.trustAsResourceUrl('https://player.vimeo.com/video/' + $scope.videoId)
+				break;
+				default: 
+					$scope.videoUrl = $sce.trustAsResourceUrl($scope.videoEmbed)
 			}
-			$scope.videoUrl = $sce.trustAsResourceUrl($scope.embedBase + $scope.videoId)
 		}]
 	}
 })
