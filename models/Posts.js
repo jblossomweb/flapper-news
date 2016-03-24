@@ -22,9 +22,9 @@ var favicons = 'public/img/favicons/' //TODO: get from config
 
 var PostSchema = new mongoose.Schema({
     _id: String,
-  title: String,
-  link: String,
-  teaser: String,
+  title: { type: String, maxlength: 70, required: true },
+  link: { type: String, required: true },
+  teaser: { type: String, maxlength: 140 },
   desc: String,
   source: String,
   externalId: String,

@@ -8,8 +8,22 @@ form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
     input.form-control(type='text', placeholder='Teaser', ng-model='teaser')
   .form-group
     textarea.form-control(placeholder='Description', ng-model='desc', rows="12")
-  span(style='color:red', ng-show='frmPost.title.$error.required') Title is required
-  span(style='color:red', ng-show='frmPost.link.$error.url') Invalid url
+
+  uib-alert(type='danger', ng-if='frmPost.title.$error.required') Title is required
+  uib-alert(type='danger', ng-if='frmPost.link.$error.url') Invalid url
+
+  uib-alert(type='danger', ng-if='apiErrors', ng-repeat="error in apiErrors") {{ error }}
+
+  uib-alert(type='success', ng-if='apiSuccess')
+    div{{ apiSuccess }}
+    div(ng-click="closeModals()")
+      a.favicon(href='#/posts/{{lastPost.id}}')
+        img(img-default, ng-src='{{CDN_URL}}img/favicons/{{lastPost.id}}.ico', default-src='favicon.ico')
+      |&nbsp;&nbsp;
+      a(href='#/posts/{{lastPost.id}}') 
+        |{{lastPost.title | limitTo: 30 }}
+        i(ng-if="lastPost.title.length > 30") ...
+
   button.pull-right.btn.btn-primary(type='submit')
     span.glyphicon.glyphicon-plus
     |&nbsp;&nbsp; Add Post

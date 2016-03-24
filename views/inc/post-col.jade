@@ -6,9 +6,18 @@ h4
   a.favicon(href='#/posts/{{post.id}}')
     img(img-default, ng-src='{{CDN_URL}}img/favicons/{{post.id}}.ico', default-src='favicon.ico')
   |&nbsp;
-  a(href='#/posts/{{post.id}}') {{post.title}}
+  a(href='#/posts/{{post.id}}') 
+    |{{post.title | limitTo: 40 }}
+    i(ng-if="post.title.length > 40") ...
 
-p.post-desc {{post.teaser}}
+p.post-desc
+  |{{post.teaser | limitTo: 70 }}
+  i(ng-if="post.teaser.length > 70") ...
+
+p.tiny
+    small
+      span posted&nbsp;
+      time(am-time-ago="post.created")
 
 p
   a.btn.btn-success(ng-click='upvotePost(post)')
@@ -16,6 +25,6 @@ p
     |&nbsp;&nbsp;{{post.upvotes}} flaps
   |&nbsp;
   a.btn.btn-info(href='#/posts/{{post.id}}')
-    span.glyphicon.glyphicon-bullhorn
+    span.glyphicon.glyphicon-comment
     |&nbsp;&nbsp;{{post.comments.length || 0}} Comments
 

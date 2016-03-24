@@ -9,6 +9,10 @@
 
 .jumbotron.col-md-6.col-sm-12(style="background:transparent")
   h1 {{post.title}}
+  p.tiny
+    small
+      span posted&nbsp;
+      time(am-time-ago="post.created")
   p {{post.teaser}}
   p
     a.btn.btn-success(ng-click='upvotePost(post)')

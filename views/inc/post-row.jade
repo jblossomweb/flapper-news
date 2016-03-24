@@ -5,7 +5,9 @@ span.comment
   a.favicon(href='#/posts/{{post.id}}')
     img(img-default, ng-src='{{CDN_URL}}img/favicons/{{post.id}}.ico', default-src='favicon.ico')
   |&nbsp;&nbsp;
-  a(href='#/posts/{{post.id}}') {{post.title}}
+  a(href='#/posts/{{post.id}}') 
+    |{{post.title | limitTo: 20 }}
+    i(ng-if="post.title.length > 20") ...
 span
   | &nbsp;&nbsp;&nbsp;
   a(href='#/posts/{{post.id}}') {{post.comments.length || 0}} Comments

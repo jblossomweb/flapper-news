@@ -20,6 +20,12 @@
     "angular": "angularjs#~1.5.2",
     "angular-ui-router": "~0.2.18",
     "angular-bootstrap": "~1.2.5",
-    "bootswatch-dist": "superhero"
+    "bootswatch-dist": "superhero",
+    "moment": "~2.12.0",
+    "angular-moment": "~0.10.3"
+  },
+  "resolutions": {
+    "angular": "~1.5.2",
+    "moment": "~2.12.0"
   }
 }

@@ -1,4 +1,4 @@
-var app = angular.module('flapperNews', ['ui.router', 'ui.bootstrap'])
+var app = angular.module('flapperNews', ['ui.router', 'ui.bootstrap', 'angularMoment'])
 
 app.config([
 '$stateProvider',
@@ -35,7 +35,7 @@ app.directive('rootScope', function() {
 		link: function(scope, element, attrs) {
 			scope.CDN_URL = attrs.cdnUrl
 		},
-		controller: ['$scope', '$uibModal', 'postFactory', function($scope, $uibModal, postFactory) {
+		controller: ['$scope', '$uibModal', '$uibModalStack', 'postFactory', function($scope, $uibModal, $uibModalStack, postFactory) {
 			$scope.openModal = function(template, data, size) {
 				if(!size) {
 					var size = 'lg'
@@ -49,7 +49,12 @@ app.directive('rootScope', function() {
 					}
 				})
 			}
-			$scope.createPost = function(post){
+
+			$scope.closeModals = function() {
+				$uibModalStack.dismissAll()
+			}
+
+			$scope.createPost = function(post, callback){
 				if(!post || !post.title || post.title === '') { return }
 				postFactory.create({
 					title: post.title, 
@@ -58,7 +63,7 @@ app.directive('rootScope', function() {
 					desc: post.desc,
 					upvotes: 0,
 					comments: []
-				})
+				}, callback)
 			}
 			$scope.upvotePost = function(post) {
 				postFactory.upvote(post)
@@ -118,12 +123,31 @@ app.directive('postForm', function() {
 	return {
 		templateUrl: 'views/directives/post-form',
 		controller: ['$scope', '$rootScope', function($scope, $rootScope) {
+			// $scope.closeModals = $rootScope.closeModals
 			$scope.addPost = function() {
-				$rootScope.createPost($scope)
-				$scope.title = ''
-				$scope.link = ''
-				$scope.teaser = ''
-				$scope.desc = ''
+				$rootScope.createPost($scope, function created(err, lastPost){
+					if(err) {
+						$scope.apiSuccess = false
+						$scope.lastPost = false
+						$scope.apiErrors = []
+						if(err && err.errors) {
+							angular.forEach(err.errors, function(error, field) {
+								$scope.apiErrors.push(error.message)
+							})
+						} else {
+							$scope.apiErrors = [err.message]
+						}
+
+					} else {
+						$scope.apiErrors = false
+						$scope.apiSuccess = 'Successfully posted!'
+						$scope.lastPost = lastPost
+						$scope.title = ''
+						$scope.link = ''
+						$scope.teaser = ''
+						$scope.desc = ''
+					}
+				})
 			}
 		}]
 	}
@@ -137,7 +161,7 @@ app.factory('postFactory', ['$http', function($http){
     return $http.get('/api/posts').success(function(data){
       angular.copy(data, obj.posts)
     }).error(function(error){
-    	console.log(error)
+    	console.error(error)
     })
   }
   obj.get = function get(id) {
@@ -145,18 +169,24 @@ app.factory('postFactory', ['$http', function($http){
 	    return res.data
 	  })
 	}
-  obj.create = function create(post) {
+  obj.create = function create(post, callback) {
   	return $http.post('/api/posts', post).success(function(data){
     	obj.posts.push(data)
+    	if(callback) {
+    		callback(null,data)
+    	}
   	}).error(function(error){
-    	console.log(error)
+    	console.error(error)
+    	if(callback) {
+    		callback(error)
+    	}
     })
 	}
 	obj.upvote = function upvote(post) {
 	  return $http.put('/api/posts/'+post.id+'/upvote').success(function(data){
       post.upvotes++
     }).error(function(error){
-    	console.log(error)
+    	console.error(error)
     })
 	}
 	obj.addComment = function addComment(id, comment) {
@@ -166,7 +196,7 @@ app.factory('postFactory', ['$http', function($http){
 	  return $http.put('/api/posts/'+post.id+'/comments/'+comment.id+'/upvote').success(function(data){
 	  	comment.upvotes++
 	  }).error(function(error){
-    	console.log(error)
+    	console.error(error)
     })
 	}
   return obj
