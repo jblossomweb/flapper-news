@@ -80,15 +80,20 @@ h1 .favicon img {
 
 .modal-container .post-form-container .btn-close {
 	position: absolute;
-    top: 10px;
-    right: -20px;
+	top: -12px;
+    right: -14px;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+    padding-right: 0px;
+    padding-top: 7px;
     border-radius: 50%;
-    width: 40px;
-    height: 46px;
     cursor: pointer;
-    font-size: 16px;
-    padding-right: 30px;
-    padding-top: 14px;
+    
+}
+
+.modal-container .post-form-container .btn-close span.glyphicon {
+	margin-left: -15px;
 }
 
 .modal-container .post-form-container form {
@@ -96,6 +101,14 @@ h1 .favicon img {
 	background:#2b3e50;
 	border:4px solid #4e5d6c;
 	padding-bottom:12px;
+}
+
+.modal-content {
+	border:0;
+}
+
+.form-group.bottom-buttons {
+	height:30px;
 }
 
 /* Custom, iPhone Retina */ 
@@ -116,6 +129,7 @@ h1 .favicon img {
 	.jumbotron p {
 		font-size:18px;
 	}
+
 }
 
 /* Medium Devices, Desktops */
@@ -125,6 +139,18 @@ h1 .favicon img {
 	}
 	.jumbotron p {
 		font-size:18px;
+	}
+	.modal-container .post-form-container .btn-close {
+		top: 10px;
+    	right: -20px;
+    	width: 40px;
+    	height: 46px;
+    	font-size: 16px;
+	    padding-right: 30px;
+	    padding-top: 14px;
+	}
+	.modal-container .post-form-container .btn-close span.glyphicon {
+		margin-left: 0px;
 	}
 }
 
