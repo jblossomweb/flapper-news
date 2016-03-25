@@ -15,6 +15,20 @@ a {
 	margin-bottom:18px;
 }
 
+.post-row span{
+	font-size:10px;
+}
+
+.post-row span.comment{
+	font-size:12px;
+}
+
+.post-row .btn {
+	font-size: 9px;
+    padding: 6px 8px;
+    min-width: 64px;
+}
+
 img.logo {
 	width:40px;
 	margin-right:8px;
@@ -57,7 +71,8 @@ h1 .favicon img {
 }
 
 .post-col .btn {
-	font-size:11px;
+	font-size:9px;
+	padding: 6px 8px;
 }
 
 .post-col h4 {
@@ -69,7 +84,9 @@ h1 .favicon img {
 }
 
 .post-col .post-desc {
-	height:80px;
+	height: 60px;
+    font-size: 12px;
+    margin-top: -10px;
 	overflow:hidden;
 	text-overflow: ellipsis;
 }
@@ -111,15 +128,49 @@ h1 .favicon img {
 	height:30px;
 }
 
+.jumbotron .btn {
+	padding: 8px 12px;
+}
+
 /* Custom, iPhone Retina */ 
 @media only screen and (min-width : 320px) {
     
 }
 
+/* custom stop */
+@media only screen and (min-width : 460px) {
+	.post-col .btn {
+		font-size:10px;
+		padding: 7px 12px;
+	}
+}
+
 /* Extra Small Devices, Phones */ 
 @media only screen and (min-width : 480px) {
+	.post-row span{
+		font-size:11px;
+	}
 
+	.post-row span.comment{
+		font-size:13px;
+	}
 }
+
+/* custom stop */
+@media only screen and (min-width : 492px) {
+	.post-col .btn {
+		font-size:11px;
+		padding: 8px 14px;
+	}
+	.post-row span{
+		font-size:12px;
+	}
+
+	.post-row span.comment{
+		font-size:14px;
+	}
+}
+
 
 /* Small Devices, Tablets */
 @media only screen and (min-width : 768px) {
@@ -129,7 +180,13 @@ h1 .favicon img {
 	.jumbotron p {
 		font-size:18px;
 	}
+	.post-row span{
+		font-size:13px;
+	}
 
+	.post-row span.comment{
+		font-size:16px;
+	}
 }
 
 /* Medium Devices, Desktops */
@@ -139,6 +196,9 @@ h1 .favicon img {
 	}
 	.jumbotron p {
 		font-size:18px;
+	}
+	.jumbotron .btn {
+		padding: 8px 16px;
 	}
 	.modal-container .post-form-container .btn-close {
 		top: 10px;

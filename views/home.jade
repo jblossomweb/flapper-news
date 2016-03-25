@@ -4,13 +4,12 @@ include inc/page-header.jade
   include inc/post-jumbotron.jade
 
 .row.page-header
-  .col-md-3.col-sm-6.col-xs-6.post-col(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 0 && $index <= 4")
+  .col-md-3.col-sm-6.col-xs-6.post-col(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 0 && $index <= 8")
     include inc/post-col.jade
 
 .row.page-header
   .col-md-6
-    //- && $index <= 20
-    .row.post-row(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 4")
+    .row.post-row(ng-repeat="post in posts | orderBy:['-upvotes','created']", ng-if="$index > 8")
       include inc/post-row.jade
   .col-md-6
     post-form

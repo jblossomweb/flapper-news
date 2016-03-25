@@ -2,8 +2,9 @@ h4 Comments
 .comment-row(ng-repeat="comment in post.comments | orderBy:'-upvotes'")
   p.comment {{comment.body}}
   p
-    span.glyphicon.glyphicon-thumbs-up(ng-click='upvoteComment(comment)')
-    |  {{comment.upvotes}} flaps - by {{comment.author}}
+    a.btn.btn-success(ng-click='upvoteComment(comment)')
+      span.glyphicon.glyphicon-thumbs-up
+      |&nbsp;&nbsp;{{comment.upvotes}} flaps
 form(ng-submit='addComment()', style='margin-top:30px;')
   h3 Add a Comment
   .form-group
