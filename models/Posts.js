@@ -18,8 +18,8 @@ if(config.aws.use_aws_s3) {
     File = require("../services/aws")
 }
 
-var screenshots = config.paths.screenshots
-var favicons = config.paths.favicons
+var screenshots = "public/" + config.paths.screenshots
+var favicons = "public/" + config.paths.favicons
 
 var PostSchema = new mongoose.Schema({
     _id: String,

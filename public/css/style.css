@@ -132,6 +132,20 @@ h1 .favicon img {
 	padding: 8px 12px;
 }
 
+.thumbnail img {
+	object-fit: cover;
+	overflow: hidden;
+	opacity: 1.0;
+}
+
+.thumbnail:hover {
+	background-color: #00B7FF;
+}
+
+.thumbnail:hover image {
+	opacity: 0.8;
+}
+
 /* Custom, iPhone Retina */ 
 @media only screen and (min-width : 320px) {
     
@@ -217,7 +231,7 @@ h1 .favicon img {
 /* Large Devices, Wide Screens */
 @media only screen and (min-width : 1200px) {
 	.jumbotron h1 {
-		font-size:68px;
+		font-size:44px;
 	}
 	.jumbotron p {
 		font-size:23px;

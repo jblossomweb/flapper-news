@@ -136,7 +136,9 @@ normalizePost = function normalizePost(post){
     'upvotes', 
     'created', 
     'source', 
-    'externalId'
+    'externalId',
+    'image',
+    'icon'
   )
 	post = _.extendOwn({id: post._id}, post)
 	delete post._id

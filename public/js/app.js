@@ -38,6 +38,8 @@ app.directive('rootScope', function() {
 	return {
 		link: function(scope, element, attrs) {
 			scope.CDN_URL = attrs.cdnUrl
+			scope.SCREENSHOTS = attrs.screenshots
+			scope.FAVICONS = attrs.favicons
 		},
 		controller: ['$scope', '$uibModal', '$uibModalStack', 'postFactory', function($scope, $uibModal, $uibModalStack, postFactory) {
 			$scope.openModal = function(template, data, size) {

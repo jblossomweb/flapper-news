@@ -17,7 +17,7 @@ module.exports = {
         secret_access_key: process.env.AWS_SECRET_ACCESS_KEY
     },
     paths: {
-        screenshots: process.env.SCREENSHOTS_PATH || 'public/img/screenshots/',
-        favicons: process.env.FAVICONS_PATH || 'public/img/favicons/'
+        screenshots: process.env.SCREENSHOTS_PATH || 'img/screenshots/',
+        favicons: process.env.FAVICONS_PATH || 'img/favicons/'
     }
 }

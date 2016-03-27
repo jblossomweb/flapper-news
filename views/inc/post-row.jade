@@ -3,7 +3,8 @@ a.btn.btn-success(ng-click='upvotePost(post)')
   |&nbsp;&nbsp;{{post.upvotes}} flaps
 span.comment
   a.favicon(href='#/posts/{{post.id}}')
-    img(img-default, ng-src='{{CDN_URL}}img/favicons/{{post.id}}.ico', default-src='favicon.ico')
+    img(ng-if='post.icon', img-default, ng-src='{{CDN_URL}}{{FAVICONS}}{{post.icon}}', default-src='favicon.ico')
+    img(ng-if='!post.icon', img-default, ng-src='{{CDN_URL}}{{FAVICONS}}{{post.id}}.ico', default-src='favicon.ico')
   |&nbsp;&nbsp;
   a(href='#/posts/{{post.id}}') 
     |{{post.title | limitTo: 20 }}

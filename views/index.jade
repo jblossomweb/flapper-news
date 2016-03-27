@@ -4,7 +4,7 @@ html
     link(href="libs/bootswatch-dist/css/bootstrap.min.css", rel="stylesheet")
     link(href="css/style.css", rel="stylesheet")
       
-  body(ng-app="flapperNews", root-scope, data-cdn-url="#{CDN_URL}", autoscroll="true")
+  body(ng-app="flapperNews", root-scope, data-cdn-url="#{CDN_URL}", data-screenshots="#{SCREENSHOTS}", data-favicons="#{FAVICONS}",autoscroll="true")
     .container
       ui-view
 

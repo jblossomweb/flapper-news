@@ -1,10 +1,12 @@
 .thumbnail
   a.embed-responsive.embed-responsive-16by9.screenshots(href='#/posts/{{post.id}}')
-    img.embed-responsive-item(img-default, ng-src='{{CDN_URL}}img/screenshots/{{post.id}}.jpg', default-src='img/default.jpg')
+    img.embed-responsive-item(ng-if='post.image', img-default, ng-src='{{CDN_URL}}{{SCREENSHOTS}}{{post.image}}', default-src='img/default.jpg')
+    img.embed-responsive-item(ng-if='!post.image', img-default, ng-src='{{CDN_URL}}{{SCREENSHOTS}}{{post.id}}.jpg', default-src='img/default.jpg')
 
 h4
   a.favicon(href='#/posts/{{post.id}}')
-    img(img-default, ng-src='{{CDN_URL}}img/favicons/{{post.id}}.ico', default-src='favicon.ico')
+    img(ng-if='post.icon', img-default, ng-src='{{CDN_URL}}{{FAVICONS}}{{post.icon}}', default-src='favicon.ico')
+    img(ng-if='!post.icon', img-default, ng-src='{{CDN_URL}}{{FAVICONS}}{{post.id}}.ico', default-src='favicon.ico')
   |&nbsp;
   a(href='#/posts/{{post.id}}') 
     |{{post.title | limitTo: 50 }}
