@@ -8,6 +8,7 @@ var pt = require('stream').PassThrough
 var fv = require('favicon')
 
 var config = require("../config")
+var Exts = require("../tools/extensions")
 var Vimeo = require("../services/vimeo")
 var Scraper = require("../services/scraper")
 
@@ -17,8 +18,8 @@ if(config.aws.use_aws_s3) {
     File = require("../services/aws")
 }
 
-var screenshots = 'public/img/screenshots/' //TODO: get from config
-var favicons = 'public/img/favicons/' //TODO: get from config
+var screenshots = config.paths.screenshots
+var favicons = config.paths.favicons
 
 var PostSchema = new mongoose.Schema({
     _id: String,
@@ -60,14 +61,28 @@ PostSchema.pre('save', function(next) {
                     slugSet(slug, n)
                 } else {
                     self._id = findId
+                    source(self)
+                    screenshot(self, screenshots + self._id + '.jpg', function(err, imgExt){
+                        if(!err && imgExt) {
+                            var imgFile = self._id + '.' + imgExt
+                            self.image = imgFile
+                            // TODO: emit socket event
+                            console.log(imgFile + ' was created')
+                            self.save()
+                        }
 
-                    screenshot(self, screenshots + self._id + '.jpg', function(err){
-                        // console.log(self._id + '.jpg was created')
+                        // next do this. (not in parallel to prevent save() overwrite)
+                        favicon(self,  favicons + self._id + '.ico', function(err, icoExt){
+                            if(!err && icoExt) {
+                                var iconFile = self._id + '.' + icoExt
+                                self.icon = iconFile
+                                // TODO: emit socket event
+                                console.log(iconFile + ' was created')
+                                self.save()
+                            }
+                        })
                     })
-
-                    favicon(self,  favicons + self._id + '.ico', function(){
-                        // console.log(self._id + '.ico was created')
-                    })
+                    
                     // don't wait
                     next()
                 }
@@ -89,41 +104,55 @@ mongoose.model('Post', PostSchema)
 function favicon(post, path, callback) {
     var link = url.parse(post.link)
     fv(link, function(err, favicon_url) {
-        if(!favicon_url) {
-            var favicon_url = link.protocol + "//" + link.host + "/favicon.ico"
+        if(!err && favicon_url && favicon_url.length) {
+            File.pipe(favicon_url, path, callback)
+        } else {
+            scrapeIcon(post, path, callback)
+            // var favicon_url = link.protocol + "//" + link.host + "/favicon.ico"
+            // File.pipe(favicon_url, path, function(err, ext){
+            //     if(err) {
+            //         scrapeIcon(post, path, callback)
+            //     } else {
+            //         callback(null, ext)
+            //     }
+            // })
         }
-        File.pipe(favicon_url, path, function(err){
-            if(err) {
-                // TODO: something here
-            }
-            callback()
-        })
     })
 }
 
-function screenshot(post, path, callback) {
+function source(post) {
     var link = url.parse(post.link)
     switch(link.host) {
         case 'www.youtube.com':
         case 'youtube.com':
         case 'youtu.be':
             post.source = "youtube"
-            youtubeShot(post, path, callback)
             break;
         case 'www.vimeo.com':
         case 'vimeo.com':
             post.source = "vimeo"
-            vimeoShot(post, path, callback)
             break;
         default:
             post.source = "web"
-            if(isJpeg(link.pathname)) {
-                imgShot(post, path, callback)
-            } else {
-                scrapeShot(post, path, callback)
-            }
     }
-    
+}
+
+function screenshot(post, path, callback) {
+    var link = url.parse(post.link)
+    if(!post.source) {
+        source(post)
+    }
+    if(Exts.isImage(link.pathname)) {
+        imgShot(post, path, callback)
+    } else {
+        switch(post.source) {
+            case 'youtube': youtubeShot(post, path, callback)
+            break;
+            case 'vimeo': vimeoShot(post, path, callback)
+            break;
+            default: scrapeShot(post, path, callback)
+        }
+    } 
 }
 
 function imgShot(post, path, callback) {
@@ -132,25 +161,19 @@ function imgShot(post, path, callback) {
 
 function webshot(post, path, callback) {
     var pass = new pt()
-    var shot = ws(post.link, {streamType: 'jpg'})
+    var ext = Exts.getFileExtension(path)
+    var shot = ws(post.link, {streamType: ext})
     shot.pipe(pass)
     File.save(pass, path, callback)
 }
 
 function scrapeShot(post, path, callback) {
     var Url = url.parse(post.link)
-    Scraper.scrape(post.link, function(error, result){
+    Scraper.getInfo(post.link, function(error, result){
         if(!error && result) {
-            var $ = result
-            var ogImage = $('meta[property="og:image"]').attr('content')
-            var twitterImage = $('meta[property="twitter:image"]').attr('content')
-            var twitterImageSrc = $('meta[property="twitter:image:src"]').attr('content')
-            if(ogImage && isJpeg(ogImage)) {
-                File.pipe(ogImage, path, callback)
-            } else if(twitterImage && isJpeg(twitterImage)) {
-                File.pipe(twitterImage, path, callback)
-            } else if(twitterImageSrc && isJpeg(twitterImageSrc)) {
-                File.pipe(twitterImage, path, callback)
+           var image = result.image
+            if(image && Exts.isImage(image)) {
+                File.pipe(image, path, callback)
             } else {
                 webshot(post, path, callback)
             }
@@ -160,58 +183,43 @@ function scrapeShot(post, path, callback) {
     })
 }
 
-// not yet used
-function scrapePlayer(post, callback) {
-    var link = post.link
-    var Url = url.parse(link)
-    Scraper.scrape(link, function(error, result){
+function scrapeIcon(post, path, callback) {
+    var Url = url.parse(post.link)
+    Scraper.getInfo(post.link, function(error, result){
         if(!error && result) {
-            var $ = result
-            var twPlayer = $('meta[property="twitter:player"]').attr('content')
-            var ogPlayer = $('meta[property="og:video"]').attr('content')
-            var ogWidth = $('meta[property="og:video:width"]').attr('content')
-            var ogHeight = $('meta[property="og:video:height"]').attr('content')
-            if(twPlayer) {
-                post.videoPlayer = twPlayer
-                if(post.source === 'web') {
-                    post.source = 'web-video'
-                }
-                callback(null, post.videoPlayer)
-            } else if(ogPlayer) {
-                post.videoPlayer = ogPlayer
-                if(ogWidth && ogHeight) {
-                    post.videoWidth = Number(ogWidth)
-                    post.videoHeight = Number(ogHeight)
-                }
-                if(post.source === 'web') {
-                    post.source = 'web-video'
-                }
-                callback(null, post)
+           var icon = result.icon
+            if(icon && (Exts.isImage(icon) || Exts.isIco(icon))) {
+                File.pipe(icon, path, callback)
             } else {
-                callback(new Error("scrapePlayer could not parse a video embed url: "+link))
+                callback(error || new Error('scraper could not find icon'))
             }
         } else {
-            callback(error || new Error("scrapePlayer could not scrape: "+link))
+            callback(error || new Error('could not scrape icon'))
         }
     })
 }
 
 function youtubeShot(post, path, callback) {
     var link = url.parse(post.link)
-    if(link.host === 'youtu.be') {
-        post.externalId = link.path.replace("/","")
+    if(Exts.isImage(link.pathname)) {
+        imgShot(post, path, callback)
     } else {
-        var params = link.query ? qs.parse(link.query) : {}
-        if(params.v) {
-            post.externalId = params.v
+        if(link.host === 'youtu.be') {
+            post.externalId = link.path.replace("/","")
+        } else {
+            var params = link.query ? qs.parse(link.query) : {}
+            if(params.v) {
+                post.externalId = params.v
+            }
         }
-    }
-    if(post.externalId) {
-        var thumbUrl = "http://img.youtube.com/vi/" + post.externalId + "/0.jpg"
-        File.pipe(thumbUrl, path, callback)
-    } else {
-        post.source = "web"
-        scrapeShot(post.link, path, callback)
+        if(post.externalId) {
+            post.source = "youtube"
+            var thumbUrl = "http://img.youtube.com/vi/" + post.externalId + "/0.jpg"
+            File.pipe(thumbUrl, path, callback)
+        } else {
+            post.source = "web"
+            scrapeShot(post.link, path, callback)
+        }
     }
 }
 
@@ -224,29 +232,18 @@ function vimeoShot(post, path, callback) {
         Vimeo.getById(post.externalId, function(err, video) {
             if(video && !err) {
                 var thumbUrl = video.thumbnail_small.replace("100x75","800x600")
-                if(thumbUrl && isJpeg(thumbUrl)){
+                if(thumbUrl && Exts.isImage(thumbUrl)){
                     File.pipe(thumbUrl, path, callback)
                 } else {
-                    // not a jpeg
+                    // not a valid image
                     scrapeShot(post, path, callback)
                 }
             } else {
-                // console.log("could not talk to vimeo")
                 scrapeShot(post, path, callback)
             }
         })
     }else{
-        // console.log("not a vimeo url")
         post.source = "web"
         scrapeShot(post, path, callback)
     }
-}
-
-function getFileExtension(string) {
-    return string.substr(string.lastIndexOf('.') + 1).split(/[?#]/)[0]
-
-}
-
-function isJpeg(string) {
-    return getFileExtension(string) === 'jpg' || getFileExtension(string) === 'jpeg'
 }

@@ -29,6 +29,10 @@ function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('home')
 }])
 
+app.filter('escape', function() {
+  return window.encodeURIComponent
+})
+
 app.directive('rootScope', function() {
 	// setup some $rootScope
 	return {
@@ -122,13 +126,34 @@ app.directive('videoIframe', function() {
 app.directive('postForm', function() {
 	return {
 		templateUrl: 'views/directives/post-form',
-		controller: ['$scope', '$rootScope', function($scope, $rootScope) {
-			// $scope.closeModals = $rootScope.closeModals
+		controller: ['$scope', '$rootScope', 'urlService', function($scope, $rootScope, urlService) {
+			
+			$scope.linkLookup = function() {
+				if($scope.link && $scope.link.length) {
+					urlService.lookup($scope.link).success(function(data) {
+						$scope.title = data.title
+						$scope.teaser = data.teaser
+						$scope.desc = data.desc
+						$scope.preview = {
+							title: data.title,
+							teaser: data.teaser,
+							image: data.image
+						}
+					}).error(function(error) {
+						$scope.preview = false
+						console.error(error)
+					})
+				} else {
+					$scope.preview = false
+				}
+			}
+
 			$scope.addPost = function() {
 				$rootScope.createPost($scope, function created(err, lastPost){
 					if(err) {
 						$scope.apiSuccess = false
 						$scope.lastPost = false
+						$scope.preview = false
 						$scope.apiErrors = []
 						if(err && err.errors) {
 							angular.forEach(err.errors, function(error, field) {
@@ -146,6 +171,7 @@ app.directive('postForm', function() {
 						$scope.link = ''
 						$scope.teaser = ''
 						$scope.desc = ''
+						$scope.preview = false
 					}
 				})
 			}
@@ -202,6 +228,16 @@ app.factory('postFactory', ['$http', function($http){
   return obj
 }])
 
+app.service('urlService', ['$http', 'escapeFilter', function($http, escapeFilter){
+	this.lookup = function lookup(url) {
+		var urlencoded = escapeFilter(url)
+	  return $http.get('/api/lookup/'+urlencoded).success(function(res){
+	    return res.data
+	  }).error(function(error){
+    	console.error(error)
+    })
+	}
+}])
 
 // generic, stateless modal controller, accepts a data param if needed
 app.controller('ModalCtrl', [

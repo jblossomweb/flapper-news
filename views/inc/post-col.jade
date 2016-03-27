@@ -7,8 +7,8 @@ h4
     img(img-default, ng-src='{{CDN_URL}}img/favicons/{{post.id}}.ico', default-src='favicon.ico')
   |&nbsp;
   a(href='#/posts/{{post.id}}') 
-    |{{post.title | limitTo: 40 }}
-    i(ng-if="post.title.length > 40") ...
+    |{{post.title | limitTo: 50 }}
+    i(ng-if="post.title.length > 50") ...
 
 p.post-desc
   |{{post.teaser | limitTo: 70 }}

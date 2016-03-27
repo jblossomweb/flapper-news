@@ -3,10 +3,14 @@ var router = express.Router()
 
 var mongoose = require('mongoose')
 var _ = require('underscore')
+var url = require('url')
 
 // models
 var Post = mongoose.model('Post')
 var Comment = mongoose.model('Comment')
+
+// service
+var Scraper = require("../services/scraper")
 
 // attach model to request param :post
 router.param('post', function(req, res, next, id) {
@@ -26,6 +30,37 @@ router.param('comment', function(req, res, next, id) {
     req.comment = comment
     return next()
   })
+})
+
+// attach model to request param :url
+router.param('link', function(req, res, next, id) {
+  try {
+    req.link = url.parse(id)
+    return next()
+  } catch (error) {
+    return next(error)
+  }
+})
+
+
+// GET /lookup/:link - return prepop data about any url
+router.get('/lookup/:link', function(req, res, next) {
+
+  if(req.link && req.link.href) {
+    Scraper.getInfo(req.link.href, function(error, result) {
+      if(error){
+        return next(error)
+      }
+      if(!result){ 
+        return next(new Error('scraper result was undefined')) 
+      }
+      if(!error && result) {
+        res.json(result)
+      }
+    })
+  } else {
+    return next(new Error('requested url is invalid'))
+  }
 })
 
 // GET /posts - return a list of posts and associated metadata

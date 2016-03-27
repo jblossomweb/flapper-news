@@ -8,6 +8,7 @@ var methods = {
     "https:": https
 }
 
+var Exts = require("../tools/extensions")
 var Service = {}
 
 Service.pipe = function pipe(url, path, callback) {
@@ -25,9 +26,10 @@ Service.pipe = function pipe(url, path, callback) {
 
 Service.save = function save(stream, path, callback) {
     console.log("========> file.save() "+path)
+    var ext = Exts.getFileExtension(path)
     var file = fs.createWriteStream(path)
     stream.pipe(file)
-    callback()
+    return callback(null, ext)
 }
 
 // export module

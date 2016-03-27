@@ -1,9 +1,17 @@
 form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
   h3 Add a Post
   .form-group
-    input.form-control(type='text', placeholder='Title', ng-model='title', required='')
+    input.form-control(type='url', placeholder='Link', ng-model='link', ng-change='linkLookup()', ng-model-options='{debounce: 750}', required='')
+  .form-group(ng-if='preview')
+    .row
+      .col-xs-3
+        img.thumbnail(ng-if='preview.image', src="{{preview.image}}", width="100%")
+        img.thumbnail(ng-if='!preview.image', src="img/default.jpg", width="100%")
+      .col-xs-9
+        h4 {{title}}
+        p {{teaser}}
   .form-group
-    input.form-control(type='url', placeholder='Link', ng-model='link')
+    input.form-control(type='text', placeholder='Title', ng-model='title', required='')
   .form-group
     input.form-control(type='text', placeholder='Teaser', ng-model='teaser')
   .form-group
@@ -16,7 +24,7 @@ form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
     uib-alert(type='danger', ng-if='apiErrors', ng-repeat="error in apiErrors") {{ error }}
 
     uib-alert(type='success', ng-if='apiSuccess')
-      div{{ apiSuccess }}
+      div {{ apiSuccess }}
       div(ng-click="closeModals()")
         a.favicon(href='#/posts/{{lastPost.id}}')
           img(img-default, ng-src='{{CDN_URL}}img/favicons/{{lastPost.id}}.ico', default-src='favicon.ico')

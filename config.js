@@ -15,5 +15,9 @@ module.exports = {
         s3_bucket: process.env.S3_BUCKET || 'flapper-news-develop',
         access_key_id: process.env.AWS_ACCESS_KEY_ID,
         secret_access_key: process.env.AWS_SECRET_ACCESS_KEY
+    },
+    paths: {
+        screenshots: process.env.SCREENSHOTS_PATH || 'public/img/screenshots/',
+        favicons: process.env.FAVICONS_PATH || 'public/img/favicons/'
     }
 }
