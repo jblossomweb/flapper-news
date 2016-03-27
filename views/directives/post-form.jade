@@ -29,8 +29,8 @@ form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
       div {{ apiSuccess }}
       div(ng-click="closeModals()")
         a.favicon(href='#/posts/{{lastPost.id}}')
-          img(ng-if='lastPost.icon', img-default, ng-src='{{CDN_URL}}img/favicons/{{lastPost.icon}}', default-src='favicon.ico')
-          img(ng-if='!lastPost.icon', img-default, ng-src='{{CDN_URL}}img/favicons/{{lastPost.id}}.ico', default-src='favicon.ico')
+          img(ng-if='lastPost.icon', img-default, try-src='{{CDN_URL}}img/favicons/{{lastPost.icon}}', default-src='favicon.ico')
+          img(ng-if='!lastPost.icon', img-default, try-src='{{CDN_URL}}img/favicons/{{lastPost.id}}.ico', default-src='favicon.ico')
         |&nbsp;&nbsp;
         a(href='#/posts/{{lastPost.id}}') 
           |{{lastPost.title | limitTo: 50 }}

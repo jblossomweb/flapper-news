@@ -210,6 +210,14 @@ Service.getInfo = function (link, callback) {
     }
 }
 
+
+Service.checkStatus = function (link, callback) {
+    var Url = url.parse(link)
+    methods[Url.protocol].get(link, function onResponse(response) {
+        callback(null, response.statusCode)
+    })
+}
+
 // export module
 module.exports = Service
 

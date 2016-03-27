@@ -42,6 +42,22 @@ router.param('link', function(req, res, next, id) {
   }
 })
 
+// soft check 404s for imgDefault directive to suppress browser console
+router.get('/check/:link', function(req, res, next) {
+  if(req.link && req.link.href) {
+    Scraper.checkStatus(req.link.href, function(error, status) {
+      var valid = false
+      if(status < 400) {
+        valid = true
+      }
+      res.json({ valid: valid, status: status })
+    })
+  } else {
+    res.json({ valid: false })
+  }
+  
+})
+
 
 // GET /lookup/:link - return prepop data about any url
 router.get('/lookup/:link', function(req, res, next) {

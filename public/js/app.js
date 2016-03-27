@@ -78,18 +78,37 @@ app.directive('rootScope', function() {
 	}
 })
 
-app.directive('imgDefault', [ '$http', function($http) {
+app.directive('imgDefault', [ '$http', '$location', 'urlService', function($http, $location, urlService) {
 	return {
 		link: function(scope, element, attrs) {
-			attrs.$observe('ngSrc', function(ngSrc){
-				$http.get(ngSrc).success(function(data, status, headers){
-					if(data.length === 0) {
+			attrs.$observe('trySrc', function(trySrc){
+				if(trySrc.indexOf('http') !== 0) { // catch relative paths (for local dev env's)
+					var port = $location.port() ? ':'+$location.port() : ''
+					var prepend = $location.protocol() + '://' + $location.host() + port + '/'
+					trySrc = prepend + trySrc
+				}
+				urlService.check(trySrc).success(function(data) {
+					if(data.valid) {
+						$http.get(trySrc).success(function(data, status, headers){
+							if(data.length === 0) {
+								element.attr('src', attrs.defaultSrc)
+							} else {
+								// success. ok to fetch image.
+								element.attr('src', trySrc)
+							}
+						}).error(function(err, status){
+							if(status >= 400) {
+								// shouldn't ever happen, unless api changes
+								element.attr('src', attrs.defaultSrc)
+							}
+						})
+					} else {
+						// don't try to fetch client side (prevent 404s in console)
 						element.attr('src', attrs.defaultSrc)
 					}
-				}).error(function(err, status){
-					if(status >= 400) {
-						element.attr('src', attrs.defaultSrc)
-					}
+				}).error(function(err,status){
+					// shouldn't ever happen, unless api changes
+					element.attr('src', attrs.defaultSrc)
 				})
 			})
 		},
@@ -238,6 +257,14 @@ app.factory('postFactory', ['$http', function($http){
 }])
 
 app.service('urlService', ['$http', 'escapeFilter', function($http, escapeFilter){
+	this.check = function check(url) {
+		var urlencoded = escapeFilter(url)
+	  return $http.get('/api/check/'+urlencoded).success(function(res){
+	    return res.data
+	  }).error(function(error){
+    	console.error(error)
+    })
+	}
 	this.lookup = function lookup(url) {
 		var urlencoded = escapeFilter(url)
 	  return $http.get('/api/lookup/'+urlencoded).success(function(res){
