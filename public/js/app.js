@@ -129,9 +129,10 @@ app.directive('postForm', function() {
 	return {
 		templateUrl: 'views/directives/post-form',
 		controller: ['$scope', '$rootScope', 'urlService', function($scope, $rootScope, urlService) {
-			
+			$scope.previewSpinner = false
 			$scope.linkLookup = function() {
 				if($scope.link && $scope.link.length) {
+					$scope.previewSpinner = true
 					urlService.lookup($scope.link).success(function(data) {
 						$scope.title = data.title
 						$scope.teaser = data.teaser
@@ -141,21 +142,26 @@ app.directive('postForm', function() {
 							teaser: data.teaser,
 							image: data.image
 						}
+						$scope.previewSpinner = false
 					}).error(function(error) {
 						$scope.preview = false
+						$scope.previewSpinner = false
 						console.error(error)
 					})
 				} else {
 					$scope.preview = false
+					$scope.previewSpinner = false
 				}
 			}
 
 			$scope.addPost = function() {
+				$scope.postSpinner = true
 				$rootScope.createPost($scope, function created(err, lastPost){
 					if(err) {
 						$scope.apiSuccess = false
 						$scope.lastPost = false
 						$scope.preview = false
+						$scope.postSpinner = false
 						$scope.apiErrors = []
 						if(err && err.errors) {
 							angular.forEach(err.errors, function(error, field) {
@@ -174,6 +180,7 @@ app.directive('postForm', function() {
 						$scope.teaser = ''
 						$scope.desc = ''
 						$scope.preview = false
+						$scope.postSpinner = false
 					}
 				})
 			}

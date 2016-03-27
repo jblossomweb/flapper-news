@@ -2,6 +2,8 @@ form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
   h3 Add a Post
   .form-group
     input.form-control(type='url', placeholder='Link', ng-model='link', ng-change='linkLookup()', ng-model-options='{debounce: 750}', required='')
+  .form-group(ng-if="previewSpinner")
+    img(src="img/hourglass.gif")
   .form-group(ng-if='preview')
     .row
       .col-xs-3
@@ -35,6 +37,7 @@ form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
           i(ng-if="lastPost.title.length > 50") ...
 
   .form-group.bottom-buttons
-    button.pull-right.btn.btn-primary(type='submit')
+    button.pull-right.btn.btn-primary(type='submit', ng-if="!postSpinner")
       span.glyphicon.glyphicon-plus
       |&nbsp;&nbsp; Add Post
+    img.pull-right(ng-if="postSpinner", src="img/hourglass.gif")
