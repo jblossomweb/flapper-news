@@ -18,7 +18,7 @@
       span.glyphicon.glyphicon-comment
       |&nbsp;&nbsp;{{post.comments.length || 0}} Comments
       
-.col-md-6.col-sm-6.thumbnail
+.col-md-6.col-sm-6.thumbnail.min-height
   a(href='#/posts/{{post.id}}')
     img(ng-if='post.image', img-default, try-src='{{CDN_URL}}{{SCREENSHOTS}}{{post.image}}', default-src='img/default.jpg')
     img(ng-if='!post.image', img-default, try-src='{{CDN_URL}}{{SCREENSHOTS}}{{post.id}}.jpg', default-src='img/default.jpg')

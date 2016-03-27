@@ -132,6 +132,16 @@ h1 .favicon img {
 	padding: 8px 12px;
 }
 
+.thumbnail.min-height {
+	min-height: 200px;
+}
+
+.thumbnail {
+	background-image: url('../img/hourglass.gif');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 .thumbnail img {
 	object-fit: cover;
 	overflow: hidden;
