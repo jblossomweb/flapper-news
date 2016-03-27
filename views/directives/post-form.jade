@@ -7,7 +7,7 @@ form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
   .form-group(ng-if='preview')
     .row
       .col-xs-3
-        img.thumbnail(ng-if='preview.image', src="{{preview.image}}", width="100%")
+        img.thumbnail(ng-if='preview.image', ng-src="{{preview.image}}", width="100%")
         img.thumbnail(ng-if='!preview.image', src="img/default.jpg", width="100%")
       .col-xs-9
         h4 {{title}}
