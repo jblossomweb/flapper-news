@@ -1,7 +1,7 @@
 form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
   h3 Add a Post
   .form-group
-    input.form-control(type='url', placeholder='Link', ng-model='link', ng-change='linkLookup()', ng-model-options='{debounce: 750}', required='')
+    input.form-control(type='url', placeholder='Link', ng-model='link', ng-change='linkLookup()', ng-model-options='{debounce: 750}', required='', autofocus="true")
   .form-group(ng-if="previewSpinner")
     img(src="img/hourglass.gif")
   .form-group(ng-if='preview')
