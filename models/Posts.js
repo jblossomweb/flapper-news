@@ -88,7 +88,7 @@ PostSchema.pre('save', function(next) {
                 }
             })
         }
-        slugSet(slugify(self.title.replace(/[^0-9a-zA-Z]/g, ' ')))
+        slugSet(slugify(self.title.replace(/[^0-9a-zA-Z ]/g, '')))
     }
 })
 
