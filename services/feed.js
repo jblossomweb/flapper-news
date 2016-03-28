@@ -1,7 +1,9 @@
 var request = require('request')
 var parser = require('feedparser')
+var entities = require('entities')
+var config = require('../config')
 
-var apiBase = "http://localhost:3000/api/" // TODO: get from config
+var apiBase = config.api.base
 var Service = {}
 
 Service.ingest = function ingest(feedUrl, callback) {
@@ -29,14 +31,14 @@ Service.ingest = function ingest(feedUrl, callback) {
         method: 'POST',
         json: {
           link: item.link,
-          title: item.title.substring(0,70), //TODO: de-escape escaped html (70)
-          teaser: item.description ? item.description.substring(0,140) : item.title.substring(0,60), // (140)
-          desc: item.description || item.title
+          title: entities.decodeXML(item.title).substring(0,70),
+          teaser: item.description ? entities.decodeXML(item.description).substring(0,140) : item.title.substring(0,140),
+          desc: item.description ? entities.decodeXML(item.description) : entities.decodeXML(item.title)
         }
       })
       post.on('error', callback)
       post.on('response', function(res) {
-        // callback(null, res)
+        callback(null, res)
       })
     }
   })
