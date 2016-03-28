@@ -1,4 +1,4 @@
-var app = angular.module('flapperNews', ['ui.router', 'ui.bootstrap', 'angularMoment'])
+var app = angular.module('flapperNews', ['ui.router', 'ui.bootstrap', 'angularMoment', 'infiniteScroll'])
 
 app.config([
 '$stateProvider',
@@ -78,7 +78,7 @@ app.directive('rootScope', function() {
 	}
 })
 
-app.directive('imgDefault', [ '$http', '$location', 'urlService', function($http, $location, urlService) {
+app.directive('imgDefault', ['$http', '$location', 'urlService', function($http, $location, urlService) {
 	return {
 		link: function(scope, element, attrs) {
 			attrs.$observe('trySrc', function(trySrc){
@@ -91,26 +91,55 @@ app.directive('imgDefault', [ '$http', '$location', 'urlService', function($http
 					if(data.valid) {
 						$http.get(trySrc).success(function(data, status, headers){
 							if(data.length === 0) {
-								element.attr('src', attrs.defaultSrc)
+								attrs.$set('src', attrs.defaultSrc)
 							} else {
 								// success. ok to fetch image.
-								element.attr('src', trySrc)
+								attrs.$set('src', trySrc)
 							}
 						}).error(function(err, status){
 							if(status >= 400) {
 								// shouldn't ever happen, unless api changes
-								element.attr('src', attrs.defaultSrc)
+								attrs.$set('src', attrs.defaultSrc)
 							}
 						})
 					} else {
 						// don't try to fetch client side (prevent 404s in console)
-						element.attr('src', attrs.defaultSrc)
+						attrs.$set('src', attrs.defaultSrc)
 					}
 				}).error(function(err,status){
 					// shouldn't ever happen, unless api changes
-					element.attr('src', attrs.defaultSrc)
+					attrs.$set('src', attrs.defaultSrc)
 				})
 			})
+			// I tried this, then removed in favor of infinite scroll
+			//
+			// var lazyLoad = function() {
+			// 	var src = element.attr('lazy-src')
+			// 	var scrolled = $window.scrollY
+			// 	var position = element[0].offsetTop
+			// 	var pageHeight = $window.innerHeight
+			// 	if(scrolled + pageHeight >= position) {
+			// 		// load the image
+			// 		console.log(scrolled + pageHeight)
+			// 		console.log(position)
+			// 		console.log('load '+src)
+			// 		attrs.$set('src', src)
+			// 	}
+			// }
+			// attrs.$observe('src', function(src){
+			// 	if(element.attr('src')) {
+			// 		$window.removeEventListener("scroll", lazyLoad)
+			// 		$window.removeEventListener("resize", lazyLoad)
+			// 	}
+			// })
+			// attrs.$observe('lazySrc', function(lazySrc){
+			// 	if(!element.attr('src')) {
+			// 		$window.addEventListener("scroll", lazyLoad)
+			// 		$window.addEventListener("resize", lazyLoad)
+			// 		// init
+			// 		lazyLoad(lazySrc)
+			// 	}
+			// })
 		},
 	}
 }])
@@ -295,7 +324,12 @@ app.controller('MainCtrl', [
 '$scope',
 'postFactory',
 function($scope, postFactory){
-	$scope.posts = postFactory.posts
+	$scope.posts = postFactory.posts.slice(0,5)
+	$scope.canLoad = true
+	$scope.morePosts = function morePosts(n){
+		var morePosts = postFactory.posts.slice($scope.posts.length,$scope.posts.length+n)
+		$scope.posts = $scope.posts.concat(morePosts)
+	}
 }])
 
 // post page controller, see states

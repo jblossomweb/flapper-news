@@ -156,6 +156,13 @@ h1 .favicon img {
 	opacity: 0.8;
 }
 
+.window-scroller {
+	height:100%;
+	width:100%;
+	margin:0px;
+	overflow:auto;
+}
+
 /* Custom, iPhone Retina */ 
 @media only screen and (min-width : 320px) {
     

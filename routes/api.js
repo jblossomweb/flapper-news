@@ -81,7 +81,7 @@ router.get('/lookup/:link', function(req, res, next) {
 
 // GET /posts - return a list of posts and associated metadata
 router.get('/posts', function(req, res, next) {
-  Post.find(function(err, posts){
+  Post.find().sort('-upvotes').exec(function(err, posts){
     if(err){ return next(err) }
     res.json(normalizePosts(posts))
   })
