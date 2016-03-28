@@ -8,8 +8,11 @@ router.get('/', function(req, res, next) {
 	vars.CDN_URL = ''
 	vars.SCREENSHOTS = config.paths.screenshots
 	vars.FAVICONS = config.paths.favicons
-	if(config.aws.use_aws_s3 && config.aws.s3_cdn_base && config.aws.s3_bucket) {
+	if(config.aws && config.aws.use_aws_s3 && config.aws.s3_cdn_base && config.aws.s3_bucket) {
 		vars.CDN_URL = config.aws.s3_cdn_base + config.aws.s3_bucket + "/public/"
+	}
+	if(config.api && config.api.base) {
+		vars.API_BASE = config.api.base
 	}
   res.render('index', vars)
 })

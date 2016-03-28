@@ -40,6 +40,7 @@ app.directive('rootScope', function() {
 			scope.CDN_URL = attrs.cdnUrl
 			scope.SCREENSHOTS = attrs.screenshots
 			scope.FAVICONS = attrs.favicons
+			scope.API_BASE = attrs.apiBase
 		},
 		controller: ['$scope', '$uibModal', '$uibModalStack', 'postFactory', function($scope, $uibModal, $uibModalStack, postFactory) {
 			$scope.openModal = function(template, data, size) {
@@ -236,24 +237,25 @@ app.directive('postForm', function() {
 	}
 })
 
-app.factory('postFactory', ['$http', function($http){
+app.factory('postFactory', ['$http', '$rootScope', function($http, $rootScope){
 	var obj = {
 		posts: []
 	}
+	var apiBase = $rootScope.apiBase || '/api/'
 	obj.getAll = function getAll() {
-    return $http.get('/api/posts').success(function(data){
+    return $http.get(apiBase+'posts').success(function(data){
       angular.copy(data, obj.posts)
     }).error(function(error){
     	console.error(error)
     })
   }
   obj.get = function get(id) {
-	  return $http.get('/api/posts/'+id).then(function(res){
+	  return $http.get(apiBase+'posts/'+id).then(function(res){
 	    return res.data
 	  })
 	}
   obj.create = function create(post, callback) {
-  	return $http.post('/api/posts', post).success(function(data){
+  	return $http.post(apiBase+'posts', post).success(function(data){
     	obj.posts.push(data)
     	if(callback) {
     		callback(null,data)
@@ -266,17 +268,17 @@ app.factory('postFactory', ['$http', function($http){
     })
 	}
 	obj.upvote = function upvote(post) {
-	  return $http.put('/api/posts/'+post.id+'/upvote').success(function(data){
+	  return $http.put(apiBase+'posts/'+post.id+'/upvote').success(function(data){
       post.upvotes++
     }).error(function(error){
     	console.error(error)
     })
 	}
 	obj.addComment = function addComment(id, comment) {
-	  return $http.post('/api/posts/'+id+'/comments', comment)
+	  return $http.post(apiBase+'posts/'+id+'/comments', comment)
 	}
 	obj.upvoteComment = function(post, comment) {
-	  return $http.put('/api/posts/'+post.id+'/comments/'+comment.id+'/upvote').success(function(data){
+	  return $http.put(apiBase+'posts/'+post.id+'/comments/'+comment.id+'/upvote').success(function(data){
 	  	comment.upvotes++
 	  }).error(function(error){
     	console.error(error)
@@ -285,10 +287,11 @@ app.factory('postFactory', ['$http', function($http){
   return obj
 }])
 
-app.service('urlService', ['$http', 'escapeFilter', function($http, escapeFilter){
+app.service('urlService', ['$http', '$rootScope', 'escapeFilter', function($http, $rootScope, escapeFilter){
+	var apiBase = $rootScope.apiBase || '/api/'
 	this.check = function check(url) {
 		var urlencoded = escapeFilter(url)
-	  return $http.get('/api/check/'+urlencoded).success(function(res){
+	  return $http.get(apiBase + 'check/'+urlencoded).success(function(res){
 	    return res.data
 	  }).error(function(error){
     	console.error(error)
@@ -296,7 +299,7 @@ app.service('urlService', ['$http', 'escapeFilter', function($http, escapeFilter
 	}
 	this.lookup = function lookup(url) {
 		var urlencoded = escapeFilter(url)
-	  return $http.get('/api/lookup/'+urlencoded).success(function(res){
+	  return $http.get(apiBase + 'lookup/'+urlencoded).success(function(res){
 	    return res.data
 	  }).error(function(error){
     	console.error(error)

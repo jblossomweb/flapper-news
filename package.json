@@ -16,6 +16,7 @@
     "ejs": "~2.3.3",
     "express": "~4.13.1",
     "favicon": "0.0.2",
+    "feedparser": "^1.1.4",
     "follow-redirects": "0.0.7",
     "fs": "0.0.2",
     "jade": "^1.11.0",

@@ -19,5 +19,8 @@ module.exports = {
     paths: {
         screenshots: process.env.SCREENSHOTS_PATH || 'img/screenshots/',
         favicons: process.env.FAVICONS_PATH || 'img/favicons/'
+    },
+    api: {
+        base: process.env.API_BASE || "http://localhost:3000/api/"
     }
 }
