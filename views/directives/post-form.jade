@@ -12,11 +12,11 @@ form.post-form.col-md-12(name='frmPost', ng-submit='addPost()')
       .col-xs-9
         h4 {{title}}
         p {{teaser}}
-  .form-group
+  .form-group(ng-show='link')
     input.form-control(type='text', placeholder='Title', ng-model='title', required='')
-  .form-group
+  .form-group(ng-show='link')
     input.form-control(type='text', placeholder='Teaser', ng-model='teaser')
-  .form-group
+  .form-group(ng-show='link')
     textarea.form-control(placeholder='Description', ng-model='desc', rows="12")
 
   .form-group
