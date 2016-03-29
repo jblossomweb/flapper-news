@@ -116,7 +116,7 @@ router.get('/posts', function(req, res, next) {
     break;
     case 'default':
     default:
-      query.created["$gte"] = yesterday()
+      query.modified = {"$gte": yesterday() }
       limit = 100
   }
 
