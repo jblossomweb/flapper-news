@@ -26,19 +26,13 @@ Service.ingest = function ingest(feedUrl, callback) {
     var item
     while (item = stream.read()) {
       console.log(item.title)
-      var post = request({
-        url: apiBase + 'posts',
-        method: 'POST',
-        json: {
-          link: item.link,
-          title: entities.decodeXML(item.title).substring(0,70),
-          teaser: item.description ? entities.decodeXML(item.description).substring(0,140) : item.title.substring(0,140),
-          desc: item.description ? entities.decodeXML(item.description) : entities.decodeXML(item.title)
+      postItem(item, function(err, result){
+        // do nothing.
+        if(err) {
+          console.log(err)
+        } else {
+          console.log('posted '+result.title)
         }
-      })
-      post.on('error', callback)
-      post.on('response', function(res) {
-        callback(null, res)
       })
     }
   })
@@ -46,3 +40,43 @@ Service.ingest = function ingest(feedUrl, callback) {
 
 // export module
 module.exports = Service
+
+
+var postItem = function postItem(item, callback) {
+  request(apiBase + 'lookup/'+ encodeURIComponent(item.link), function(error, response, body) {
+    if(!error && response.statusCode < 400) {
+
+      var lookup = JSON.parse(body)
+
+      if(!lookup.wasPosted) {
+        var post = request({
+          url: apiBase + 'posts',
+          method: 'POST',
+          json: {
+            link: item.link,
+            title: entities.decodeXML(item.title).substring(0,70),
+            teaser: item.description ? entities.decodeXML(item.description).substring(0,140) : item.title.substring(0,140),
+            desc: item.description ? entities.decodeXML(item.description) : entities.decodeXML(item.title),
+            created: item.pubDate ? new Date(item.pubDate) : new Date()
+          }
+        })
+        post.on('error', callback)
+        post.on('response', function(res) {
+          callback(null, item)
+        })
+      } else {
+        var error = new Error('Link was already posted. Automated feed injest does not allow dupes.')
+        error.status = response.statusCode
+        callback(error)
+      }
+
+      
+    } else if(!error) {
+      var error = new Error('Link lookup returned bad status code')
+      error.status = response.statusCode
+      callback(error)
+    } else {
+      callback(error)
+    }
+  })
+}

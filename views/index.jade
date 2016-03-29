@@ -1,11 +1,14 @@
 html
   head
     title Flapper!
+    meta(name="viewport", content="width=device-width, height=device-height, user-scalable=no")
+    meta(name="apple-mobile-web-app-capable", content="yes")
+    link(rel="apple-touch-icon", href="image/flappy-bird-60x60.png")
+    link(rel="apple-touch-icon", sizes="120x120", href="image/flappy-bird-120x120.png")
     link(href="libs/bootswatch-dist/css/bootstrap.min.css", rel="stylesheet")
     link(href="css/style.css", rel="stylesheet")
       
   body(ng-app="flapperNews", root-scope, data-cdn-url="#{CDN_URL}", data-screenshots="#{SCREENSHOTS}", data-favicons="#{FAVICONS}", data-api-base="#{API_BASE}", autoscroll="true")
-    //- .container
     ui-view
 
     script(src="libs/angular/angular.min.js")

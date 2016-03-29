@@ -1,10 +1,38 @@
-/*body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}*/
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+.fixed-page-header {
+	height:89px;
+	background:#131b23;
+	width:100%;
+	z-index: 10;
+	position: fixed; 
+	top: 0px; 
+	margin-top: -10px;
+}
+
+.window-scroller {
+	height:100%;
+	width:100%;
+	margin:0px;
+	overflow:auto;
+	-webkit-overflow-scrolling: touch;
+	position: absolute;
+	top:0px; left:0px;
+	padding-top: 90px;
+}
 
 a {
   color: #00B7FF;
+}
+
+.opacity-fade {
+	-webkit-transition: opacity .5s ease-in;
+    -moz-transition: opacity .5s ease-in;
+    -o-transition: opacity .5s ease-in;
+    -ms-transition: opacity .5s ease-in;
+    transition: opacity .5s ease-in;
 }
 
 .btn {
@@ -58,6 +86,10 @@ h1 .favicon img {
 
 .page-header {
 	margin-top:20px;
+}
+
+.small-header {
+	margin-top:0px;
 }
 
 .main-header a {
@@ -156,11 +188,10 @@ h1 .favicon img {
 	opacity: 0.8;
 }
 
-.window-scroller {
-	height:100%;
-	width:100%;
-	margin:0px;
-	overflow:auto;
+@media only screen and (max-width : 480px) {
+	.col-xxs-12 {
+		width:100%;
+	}
 }
 
 /* Custom, iPhone Retina */ 

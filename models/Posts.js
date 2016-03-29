@@ -45,8 +45,8 @@ PostSchema.pre('save', function(next) {
         self.updated = new Date()
         next()
     } else {
-        self.created = new Date()
-        self.updated = new Date()
+        self.created = self.created || new Date() // allow created date override in api post
+        self.updated = self.created
         var slugSet = function(slug, n) {
             slug = slug.toLowerCase()
             var findId = slug

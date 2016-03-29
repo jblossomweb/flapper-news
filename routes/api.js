@@ -71,7 +71,17 @@ router.get('/lookup/:link', function(req, res, next) {
         return next(new Error('scraper result was undefined')) 
       }
       if(!error && result) {
-        res.json(result)
+        Post.find({
+          link: req.link.href
+        }).sort({created: 1}).exec(function(err, posts){
+          if(!err && posts && posts.length) {
+            result.wasPosted = true
+          } else {
+            result.wasPosted = false
+          }
+          res.json(result)
+        })
+        
       }
     })
   } else {
@@ -81,7 +91,36 @@ router.get('/lookup/:link', function(req, res, next) {
 
 // GET /posts - return a list of posts and associated metadata
 router.get('/posts', function(req, res, next) {
-  Post.find().sort('-upvotes').exec(function(err, posts){
+  var now = new Date()
+  var filter = 'default'
+  if(req.query && req.query.filter) {
+    filter = req.query.filter
+  }
+  var query = {}
+  query.created = { "$lte": now } // dont expose future posts
+  var sort = {upvotes: -1, created: -1}
+  var limit = 0
+  // quick and easy predefined filters. 
+  // if I need full api query params I will build it later.
+  switch(filter) {
+    case 'new':
+      query.created["$gte"] = yesterday()
+      sort = {created: -1}
+      limit = 100
+    break;
+    case 'top':
+      limit = 100
+    break;
+    case 'all':
+      limit = 0
+    break;
+    case 'default':
+    default:
+      query.created["$gte"] = yesterday()
+      limit = 100
+  }
+
+  Post.find(query).sort(sort).exec(function(err, posts){
     if(err){ return next(err) }
     res.json(normalizePosts(posts))
   })
@@ -176,4 +215,10 @@ normalizeComment = function normalizeComment(comment){
 
 normalizeComments = function normalizeComments(comments){
 	return _.map(comments, normalizeComment)
+}
+
+yesterday = function() {
+  var date = new Date()
+  date.setDate(date.getDate() - 1)
+  return date
 }

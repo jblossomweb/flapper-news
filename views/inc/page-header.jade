@@ -1,10 +1,28 @@
-.row
-  .page-header.main-header.col-md-12
-    h1.pull-left
-      a(href='#/home/')
-        img.logo(src="img/flappy-bird.png")
-      a(href='#/home/') Flapper!
-    h1.pull-right
-      a.btn.btn-primary(ng-click="openModal('new-post')")
-        span.glyphicon.glyphicon-plus
-        |&nbsp;&nbsp; Post
+nav.navbar.fixed-page-header
+  //- .navbar-fixed-top.fixed-page-header
+  .container
+
+    .row
+      .main-header.col-md-12
+        h2.pull-left
+          a(ui-sref="home")
+            img.logo(src="img/flappy-bird.png")
+          a(ui-sref="home") Flapper!
+        h2.pull-right
+          a.btn.btn-primary(ng-click="openModal('new-post')")
+            span.glyphicon.glyphicon-plus
+            |&nbsp;&nbsp; Post
+    .row
+      .small-header.col-md-12
+        .pull-left.small(style="padding-right:12px")
+          span.glyphicon.glyphicon-home
+          |&nbsp;&nbsp;
+          a(ui-sref="home") Home
+        .pull-left.small(style="padding-right:12px")
+          span.glyphicon.glyphicon-certificate
+          |&nbsp;&nbsp;
+          a(ui-sref="new") What's New
+        .pull-left.small
+          span.glyphicon.glyphicon-heart
+          |&nbsp;&nbsp;
+          a(ui-sref="top") Top All Time

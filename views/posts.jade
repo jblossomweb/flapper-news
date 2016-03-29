@@ -1,11 +1,10 @@
-.container
+.window-scroller
   include inc/page-header.jade
-
-  .row.page-header
-    include inc/post-page-top.jade
-
-  .row.page-header
-    .col-md-6
-      p.description(ng-bind="post.desc")
-    .col-md-6
-      include inc/post-comments.jade
+  .container
+    .row.page-header
+      include inc/post-page-top.jade
+    .row.page-header
+      .col-md-6
+        p.description(ng-bind="post.desc")
+      .col-md-6
+        include inc/post-comments.jade

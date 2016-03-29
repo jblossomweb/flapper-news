@@ -10,21 +10,42 @@ function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/home',
       controller: 'MainCtrl',
       resolve: {
-		    postPromise: ['postFactory', function(postFactory){
-		      return postFactory.getAll()
-		    }]
-		  }
+    	    postPromise: ['postFactory', function(postFactory){
+    	      return postFactory.getDefault()
+    	    }]
+    	  }
+    })
+    .state('new', {
+      url: '/whats-new',
+      templateUrl: 'views/home',
+      controller: 'MainCtrl',
+      resolve: {
+            postPromise: ['postFactory', function(postFactory){
+              return postFactory.getWhatsNew()
+            }]
+          }
+    })
+    .state('top', {
+      url: '/top-all-time',
+      templateUrl: 'views/home',
+      controller: 'MainCtrl',
+      resolve: {
+            postPromise: ['postFactory', function(postFactory){
+              return postFactory.getTopAllTime()
+            }]
+          }
     })
     .state('posts', {
-		  url: '/posts/{id}',
-		  templateUrl: 'views/posts',
-		  controller: 'PostsCtrl',
-		  resolve: {
-		    post: ['$stateParams', 'postFactory', function($stateParams, postFactory) {
-		      return postFactory.get($stateParams.id)
-		    }]
-		  }
-		})
+      url: '/posts/{id}',
+      templateUrl: 'views/posts',
+      controller: 'PostsCtrl',
+      resolve: {
+        post: ['$stateParams', 'postFactory', function($stateParams, postFactory) {
+          var post = postFactory.get($stateParams.id)
+          return post
+        }]
+      }
+    })
 
   $urlRouterProvider.otherwise('home')
 }])
@@ -82,6 +103,8 @@ app.directive('rootScope', function() {
 app.directive('imgDefault', ['$http', '$location', 'urlService', function($http, $location, urlService) {
 	return {
 		link: function(scope, element, attrs) {
+			element.css('opacity', 0)
+			element.addClass('opacity-fade')
 			attrs.$observe('trySrc', function(trySrc){
 				if(trySrc.indexOf('http') !== 0) { // catch relative paths (for local dev env's)
 					var port = $location.port() ? ':'+$location.port() : ''
@@ -111,6 +134,11 @@ app.directive('imgDefault', ['$http', '$location', 'urlService', function($http,
 					// shouldn't ever happen, unless api changes
 					attrs.$set('src', attrs.defaultSrc)
 				})
+			})
+			attrs.$observe('src', function(src){
+				if(element.attr('src')) {
+					element.css('opacity', 1)
+				}
 			})
 			// I tried this, then removed in favor of infinite scroll
 			//
@@ -242,37 +270,51 @@ app.factory('postFactory', ['$http', '$rootScope', function($http, $rootScope){
 		posts: []
 	}
 	var apiBase = $rootScope.apiBase || '/api/'
+
+    var getPosts = function getPosts(filter) {
+        return $http.get(apiBase+'posts?filter='+filter).success(function(data){
+          angular.copy(data, obj.posts)
+        }).error(function(error){
+            console.error(error)
+        })
+    }
+
+    obj.getDefault = function getDefault() {
+        return getPosts('default')
+    }
+    obj.getWhatsNew = function getWhatsNew() {
+        return getPosts('new')
+    }
+    obj.getTopAllTime = function getTopAllTime() {
+        return getPosts('top')
+    }
 	obj.getAll = function getAll() {
-    return $http.get(apiBase+'posts').success(function(data){
-      angular.copy(data, obj.posts)
-    }).error(function(error){
-    	console.error(error)
-    })
-  }
-  obj.get = function get(id) {
-	  return $http.get(apiBase+'posts/'+id).then(function(res){
-	    return res.data
-	  })
-	}
-  obj.create = function create(post, callback) {
-  	return $http.post(apiBase+'posts', post).success(function(data){
+        return getPosts('all')
+    }
+    obj.get = function get(id) {
+      return $http.get(apiBase+'posts/'+id).then(function(res){
+        return res.data
+      })
+    }
+    obj.create = function create(post, callback) {
+  	  return $http.post(apiBase+'posts', post).success(function(data){
     	obj.posts.push(data)
     	if(callback) {
     		callback(null,data)
     	}
-  	}).error(function(error){
+  	  }).error(function(error){
     	console.error(error)
     	if(callback) {
     		callback(error)
     	}
-    })
+      })
 	}
 	obj.upvote = function upvote(post) {
 	  return $http.put(apiBase+'posts/'+post.id+'/upvote').success(function(data){
-      post.upvotes++
-    }).error(function(error){
+        post.upvotes++
+      }).error(function(error){
     	console.error(error)
-    })
+      })
 	}
 	obj.addComment = function addComment(id, comment) {
 	  return $http.post(apiBase+'posts/'+id+'/comments', comment)
@@ -282,9 +324,9 @@ app.factory('postFactory', ['$http', '$rootScope', function($http, $rootScope){
 	  	comment.upvotes++
 	  }).error(function(error){
     	console.error(error)
-    })
+      })
 	}
-  return obj
+    return obj
 }])
 
 app.service('urlService', ['$http', '$rootScope', 'escapeFilter', function($http, $rootScope, escapeFilter){
@@ -327,12 +369,12 @@ app.controller('MainCtrl', [
 '$scope',
 'postFactory',
 function($scope, postFactory){
-	$scope.posts = postFactory.posts.slice(0,5)
-	$scope.canLoad = true
-	$scope.morePosts = function morePosts(n){
-		var morePosts = postFactory.posts.slice($scope.posts.length,$scope.posts.length+n)
-		$scope.posts = $scope.posts.concat(morePosts)
-	}
+    $scope.posts = postFactory.posts.slice(0,5)
+    $scope.canLoad = true
+    $scope.morePosts = function morePosts(n){
+        var morePosts = postFactory.posts.slice($scope.posts.length,$scope.posts.length+n)
+        $scope.posts = $scope.posts.concat(morePosts)
+    }
 }])
 
 // post page controller, see states

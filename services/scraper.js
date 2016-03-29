@@ -204,7 +204,26 @@ Service.getInfo = function (link, callback) {
                 info.embed = prependRelativePath(link, info.image)
             }
 
-            return callback(null, info)
+            // image: check Content-Type
+            if(info.image) {
+                return Service.checkType(info.image, function(error, type) {
+                    if(!error && type && type.indexOf('image') !== -1) {
+                        // image is valid. ok
+                        info.imageType = type
+                    } else if (!error) {
+                        // not an image
+                        delete info.image
+                    } else {
+                        // error eg 404
+                        delete info.image
+                    }
+                    return callback(null, info)
+                })
+            } else {
+                return callback(null, info)
+            }
+
+            
           }
         })
     }
@@ -215,6 +234,19 @@ Service.checkStatus = function (link, callback) {
     var Url = url.parse(link)
     methods[Url.protocol].get(link, function onResponse(response) {
         callback(null, response.statusCode)
+    })
+}
+
+Service.checkType = function (link, callback) {
+    var Url = url.parse(link)
+    methods[Url.protocol].get(link, function onResponse(response) {
+        if(response && response.headers && response.headers['content-type']) {
+            callback(null, response.headers['content-type'])
+        } else {
+            var error = new Error('could not get Content-Type for '+link)
+            error.status = response.statusCode
+            callback(error)
+        }
     })
 }
 

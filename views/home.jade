@@ -1,10 +1,10 @@
-.window-scroller(infinite-scroll="morePosts(4)", can-load="canLoad")
+.window-scroller(infinite-scroll="morePosts(4)", can-load="canLoad", threshold="100")
+  include inc/page-header.jade
   .container
-    include inc/page-header.jade
 
     .row.page-header(ng-repeat="post in posts", ng-if="$index === 0")
       include inc/post-jumbotron.jade
 
     .row.page-header
-      .col-md-3.col-sm-6.col-xs-6.post-col(ng-repeat="post in posts", ng-if="$index > 0")
+      .col-md-3.col-sm-4.col-xs-6.col-xxs-12.post-col(ng-repeat="post in posts", ng-if="$index > 0")
         include inc/post-col.jade
