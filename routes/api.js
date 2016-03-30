@@ -110,7 +110,8 @@ router.get('/posts', function(req, res, next) {
     break;
     case 'top':
       limit = 100
-      sort = {upvotes: -1, updated: -1, created: -1}
+      query.upvotes = {"$gte": 1 }
+      sort = {upvotes: -1, created: -1}
     break;
     case 'all':
       limit = 0
@@ -118,7 +119,8 @@ router.get('/posts', function(req, res, next) {
     case 'default':
     default:
       query.updated = {"$gte": yesterday() }
-      sort = {upvotes: -1, updated: -1, created: -1}
+      query.upvotes = {"$gte": 1 }
+      sort = {upvotes: -1, created: -1}
       limit = 100
   }
 
