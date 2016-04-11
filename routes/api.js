@@ -109,16 +109,18 @@ router.get('/posts', function(req, res, next) {
       limit = 100
     break;
     case 'top':
-      limit = 100
+      query.created["$lt"] = yesterday()
       query.upvotes = {"$gte": 1 }
       sort = {upvotes: -1, created: -1}
+      limit = 100
     break;
     case 'all':
       limit = 0
     break;
     case 'default':
     default:
-      query.updated = {"$gte": yesterday() }
+      query.created["$gte"] = lastweek()
+      // query.updated = {"$gte": yesterday() }
       query.upvotes = {"$gte": 1 }
       sort = {upvotes: -1, created: -1}
       limit = 100
@@ -224,5 +226,11 @@ normalizeComments = function normalizeComments(comments){
 yesterday = function() {
   var date = new Date()
   date.setDate(date.getDate() - 1)
+  return date
+}
+
+lastweek = function() {
+  var date = new Date()
+  date.setDate(date.getDate() - 7)
   return date
 }
