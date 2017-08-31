@@ -3,7 +3,6 @@ var router = express.Router()
 
 var mongoose = require('mongoose')
 var _ = require('underscore')
-var url = require('url')
 
 // models
 var Post = mongoose.model('Post')
@@ -12,35 +11,10 @@ var Comment = mongoose.model('Comment')
 // service
 var Scraper = require("../services/scraper")
 
-// attach model to request param :post
-router.param('post', function(req, res, next, id) {
-  Post.findById(id).exec(function (err, post){
-    if (err) { return next(err) }
-    if (!post) { return next(new Error('can\'t find post')) }
-    req.post = post
-    return next()
-  })
-})
-
-// attach model to request param :comment
-router.param('comment', function(req, res, next, id) {
-  Comment.findById(id).exec(function (err, comment){
-    if (err) { return next(err) }
-    if (!comment) { return next(new Error('can\'t find comment')) }
-    req.comment = comment
-    return next()
-  })
-})
-
-// attach model to request param :url
-router.param('link', function(req, res, next, id) {
-  try {
-    req.link = url.parse(id)
-    return next()
-  } catch (error) {
-    return next(error)
-  }
-})
+// middlewares
+router.param('post', require("./middleware/post"))
+router.param('comment', require("./middleware/comment"))
+router.param('link', requre("./middleware/link"))
 
 // soft check 404s for imgDefault directive to suppress browser console
 router.get('/check/:link', function(req, res, next) {
