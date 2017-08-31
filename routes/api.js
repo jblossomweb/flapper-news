@@ -18,6 +18,7 @@ router.param('link', require("./middleware/link"))
 
 // soft check 404s for imgDefault directive to suppress browser console
 router.get('/check/:link', function(req, res, next) {
+  console.log(req.link)
   if(req.link && req.link.href) {
     Scraper.checkStatus(req.link.href, function(error, status) {
       var valid = false
