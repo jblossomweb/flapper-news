@@ -14,7 +14,7 @@ var Scraper = require("../services/scraper")
 // middlewares
 router.param('post', require("./middleware/post"))
 router.param('comment', require("./middleware/comment"))
-router.param('link', requre("./middleware/link"))
+router.param('link', require("./middleware/link"))
 
 // soft check 404s for imgDefault directive to suppress browser console
 router.get('/check/:link', function(req, res, next) {
